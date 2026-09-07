@@ -15,7 +15,7 @@ export function LiveClock({ className }: LiveClockProps) {
 
   return (
     <span id="live-clock" className={`flex items-center gap-1.5 ${className || ''}`} style={{ fontFamily: "'Sora', sans-serif" }}>
-      <Calendar size={14} className="hidden sm:block opacity-70" />
+      <Calendar size={14} className="opacity-70" />
       <span>
         {time.toLocaleDateString('en-IN', {
           weekday: 'short',
@@ -24,7 +24,7 @@ export function LiveClock({ className }: LiveClockProps) {
           day: 'numeric'
         })}
       </span>
-      <Clock size={14} className="hidden sm:block ml-1 opacity-70" />
+      <Clock size={14} className="ml-1 opacity-70" />
       <span>
         {time.toLocaleTimeString('en-IN', {
           hour: '2-digit',
