@@ -68,7 +68,14 @@ const sanitizeTask = (data: any): Task => {
 export default function App() {
   const [fbUser, setFbUser] = useState<any>(null);
   const [pdfProgress, setPdfProgress] = useState<{current: number, total: number} | null>(null);
-  const [users, setUsers] = useState<UserType[]>(DEFAULT_USERS);
+  const [users, setUsers] = useState<UserType[]>(() => {
+    try {
+      const cached = localStorage.getItem('mla_users_roster');
+      return cached ? JSON.parse(cached) : DEFAULT_USERS;
+    } catch {
+      return DEFAULT_USERS;
+    }
+  });
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
   const [impersonatedUser, setImpersonatedUser] = useState<UserType | null>(null);
   const [activeTasks, setActiveTasks] = useState<Task[]>([]);
@@ -80,10 +87,6 @@ export default function App() {
   const [inputTypes, setInputTypes] = useState<string[]>(INPUT_TYPES);
   const [templates, setTemplates] = useState<string[]>([]);
   
-  const [dailyQuote, setDailyQuote] = useState('');
-  useEffect(() => {
-    setDailyQuote(MORAL_QUOTES[Math.floor(Math.random() * MORAL_QUOTES.length)]);
-  }, []);
   
   const [backupMeta, setBackupMeta] = useState<BackupMeta>({ 
     lastBackup: null, 
@@ -223,6 +226,7 @@ export default function App() {
           });
           
           setUsers(mergedUsers);
+          localStorage.setItem('mla_users_roster', JSON.stringify(mergedUsers));
         } else {
           setUsers(DEFAULT_USERS);
         }
@@ -898,13 +902,6 @@ const isImpersonating = !!impersonatedUser;
               </div>
             </div>
           </header>
-          {dailyQuote && (
-            <div className="bg-indigo-50 border-b border-indigo-100 py-1.5 px-4 text-center">
-              <p className="text-xs sm:text-sm font-semibold text-indigo-800 italic" style={{ fontFamily: "'Anek Malayalam', sans-serif" }}>
-                "{dailyQuote}"
-              </p>
-            </div>
-          )}
           <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-2 sm:py-3">
             <GlobalFilterBar />
           </div>

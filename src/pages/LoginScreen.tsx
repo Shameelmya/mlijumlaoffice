@@ -4,6 +4,7 @@ import { User as UserType } from '../types';
 import { LiveClock } from '../components/Shared/LiveClock';
 import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../services/firebase';
+import { MORAL_QUOTES } from '../utils/constants';
 
 interface LoginScreenProps {
   onLogin: (user: UserType) => void;
@@ -22,6 +23,11 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
   const [resetSent, setResetSent] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const activeUsers = users.filter(u => u.enabled !== false); // fallback to true if undefined
+  
+  const [dailyQuote, setDailyQuote] = useState('');
+  useEffect(() => {
+    setDailyQuote(MORAL_QUOTES[Math.floor(Math.random() * MORAL_QUOTES.length)]);
+  }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -73,20 +79,28 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
         <div className="bg-white/90 backdrop-blur-2xl rounded-[32px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] border border-white max-w-5xl w-full overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[450px] transition-all">
           
           {/* Left Column: Logo Display */}
-          <div className="md:col-span-5 col-span-1 bg-[#1a365d] relative overflow-hidden min-h-[300px]">
-            <img src="/logo.png" alt="Logo" className="absolute inset-0 w-full h-full object-cover object-center" />
+          <div className="md:col-span-5 col-span-1 bg-white relative overflow-hidden min-h-[300px] flex items-center justify-center">
+            <img src="/logo.png" alt="Logo" className="absolute inset-0 w-full h-full object-contain md:object-cover object-bottom md:object-center p-4 md:p-0" />
           </div>
 
           {/* Right Column */}
-          <div className="md:col-span-7 p-8 sm:p-10 md:p-12 flex flex-col justify-center bg-white relative">
-            <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
-              <div className="inline-flex items-center gap-2 bg-slate-50 border border-slate-100 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl font-bold text-[10px] sm:text-xs text-slate-600 shadow-sm transition-all">
+          <div className="md:col-span-7 p-6 sm:p-10 md:p-12 flex flex-col justify-center bg-white relative">
+            <div className="w-full flex justify-center md:absolute md:top-6 md:right-6 md:w-auto mb-6 md:mb-0">
+              <div className="inline-flex items-center gap-2 bg-slate-50 border border-slate-100 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl font-bold text-[12px] sm:text-xs text-slate-600 shadow-sm transition-all" style={{ fontFamily: 'inherit' }}>
                 <LiveClock className="text-slate-600 flex items-center justify-center gap-1.5" />
               </div>
             </div>
 
-            <div className="w-full max-w-md mx-auto mt-4 sm:mt-0">
+            <div className="w-full max-w-md mx-auto mt-2 sm:mt-0">
               
+              {dailyQuote && (
+                <div className="mb-6 bg-indigo-50/70 border border-indigo-100/50 rounded-2xl p-4 text-center">
+                  <p className="text-sm font-medium text-indigo-900" style={{ fontFamily: "'Anek Malayalam', sans-serif" }}>
+                    {dailyQuote}
+                  </p>
+                </div>
+              )}
+
               {/* Profile Cards Selection Grid */}
               {!selectedUser ? (
                 <div className="space-y-4">
