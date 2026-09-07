@@ -182,6 +182,7 @@ export function InputFormTab({
                 if (t.personalDetails.localBody) aggregated.localBody = t.personalDetails.localBody;
                 if (t.personalDetails.wardNumber) aggregated.wardNumber = t.personalDetails.wardNumber;
                 if (t.personalDetails.whatsappNumber) aggregated.whatsappNumber = t.personalDetails.whatsappNumber;
+                if (t.personalDetails.referralPerson) aggregated.referralPerson = t.personalDetails.referralPerson;
               }
               updated.personal = aggregated;
               
