@@ -205,6 +205,7 @@ export default function App() {
           return a.name.localeCompare(b.name);
         });
         setUsers(fetchedUsers);
+        localStorage.setItem('mla_users_roster', JSON.stringify(fetchedUsers));
       }, (err) => console.error("Users fetch error:", err));
       return unsub;
     } else {
