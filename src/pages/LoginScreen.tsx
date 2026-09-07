@@ -54,16 +54,25 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
     setIsLoggingIn(true);
     try {
       await setPersistence(auth, keepSignedIn ? browserLocalPersistence : browserSessionPersistence);
-      let emailToTry = customEmail || selectedUser.email || `${selectedUser.id.toLowerCase().replace(/[^a-z0-9]/g, '')}@mliju.local`;
+      
+      const emailMliju = customEmail || selectedUser.email || `${selectedUser.id.toLowerCase().replace(/[^a-z0-9]/g, '')}@mliju.local`;
+      const emailMarazak = customEmail || selectedUser.email || `${selectedUser.id.toLowerCase().replace(/[^a-z0-9]/g, '')}@marazak.local`;
 
-      await signInWithEmailAndPassword(auth, emailToTry, password);
-      onLogin(selectedUser);
-    } catch (err: any) {
-      console.error(err);
-      if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
-        setError('Incorrect Password. Please try again.');
-      } else {
-        setError('Login Failed: ' + err.message);
+      try {
+        await signInWithEmailAndPassword(auth, emailMliju, password);
+        onLogin(selectedUser);
+      } catch (err1: any) {
+        if (err1.code === 'auth/invalid-credential' || err1.code === 'auth/user-not-found' || err1.code === 'auth/wrong-password') {
+          // If the first one fails, try the legacy marazak email just in case the user was created before the domain change
+          try {
+             await signInWithEmailAndPassword(auth, emailMarazak, password);
+             onLogin(selectedUser);
+          } catch (err2: any) {
+             setError('Incorrect Password. Please try again.');
+          }
+        } else {
+          setError('Login Failed: ' + err1.message);
+        }
       }
     } finally {
       setIsLoggingIn(false);
