@@ -118,7 +118,7 @@ export function AdminSettings({
               </div>
             )}
             {u.role === 'subadmin' && (
-              <div className="absolute top-5 right-4 bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-1 rounded uppercase">
+              <div className="absolute top-5 right-4 bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-1 rounded uppercase">
                 SUB-ADMIN
               </div>
             )}
@@ -236,7 +236,7 @@ export function AdminSettings({
                    {u.role !== 'admin' && (
                      <button 
                        onClick={() => updateUserDoc(u.id, 'role', u.role === 'subadmin' ? 'officer' : 'subadmin')} 
-                       className={`flex-1 text-[10px] font-bold uppercase tracking-widest py-2 border rounded-lg transition-colors ${u.role === 'subadmin' ? 'text-amber-600 bg-amber-50 border-amber-200 hover:bg-amber-100' : 'text-purple-600 bg-purple-50 border-purple-200 hover:bg-purple-100'}`}
+                       className={`flex-1 text-[10px] font-bold uppercase tracking-widest py-2 border rounded-lg transition-colors ${u.role === 'subadmin' ? 'text-amber-600 bg-amber-50 border-amber-200 hover:bg-amber-100' : 'text-blue-600 bg-blue-50 border-blue-200 hover:bg-blue-100'}`}
                      >
                        <Shield size={12} className="inline mr-1"/> {u.role === 'subadmin' ? 'Remove Sub-Admin' : 'Make Sub-Admin'}
                      </button>
@@ -277,7 +277,7 @@ export function AdminSettings({
               value={newOffForm.email} 
               onChange={e => setNewOffForm({...newOffForm, email: e.target.value})} 
               className="w-full px-3 py-2 rounded-lg border border-indigo-200 outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-800" 
-              placeholder="officer@marazak.local" 
+              placeholder="officer@mliju.local" 
             />
           </div>
           <div className="col-span-1 md:col-span-1">
@@ -382,7 +382,7 @@ export function AdminSettings({
             <div className="w-full flex justify-end mt-2 pt-2 border-t border-slate-100">
               <button 
                 type="submit" 
-                className="bg-purple-600 text-white px-5 py-2 rounded-2xl font-bold text-sm hover:bg-purple-700 transition-colors shadow"
+                className="bg-blue-600 text-white px-5 py-2 rounded-2xl font-bold text-sm hover:bg-blue-700 transition-colors shadow"
               >
                 Create Officer Profile
               </button>

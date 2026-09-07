@@ -22,7 +22,7 @@ export function AttachmentRenderer({ attachment, currentUser, onDeleteSuccess, i
   
   let canDelete = false;
   if (!isString && driveId) {
-    if (currentUser?.role === 'admin' && currentUser?.name === 'M. A. Razak Master (MLA)') {
+    if (currentUser?.role === 'admin' && currentUser?.name === 'M. Liju (MLA)') {
       canDelete = true;
     } else if (attachment.uploaderId === currentUser?.id && attachment.uploadedAt) {
       // Check if within 24 hours
@@ -54,7 +54,7 @@ export function AttachmentRenderer({ attachment, currentUser, onDeleteSuccess, i
           href={url} 
           target="_blank" 
           rel="noreferrer" 
-          className="text-white bg-purple-600 hover:bg-purple-700 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider transition-colors flex items-center gap-1"
+          className="text-white bg-blue-600 hover:bg-blue-700 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider transition-colors flex items-center gap-1"
           title="View"
         >
           <Eye size={10} /> View

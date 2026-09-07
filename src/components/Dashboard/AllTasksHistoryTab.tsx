@@ -68,12 +68,12 @@ export function AllTasksHistoryTab({
             placeholder="Search history by Subject, Name, ID, Mobile..." 
             value={search} 
             onChange={e => setSearch(e.target.value)} 
-            className="w-full pl-9 sm:pl-12 pr-4 py-2 sm:py-2.5 bg-white border border-slate-300 rounded-[12px] sm:rounded-2xl font-medium outline-none focus:border-purple-500 text-slate-800 text-[11px] sm:text-base" 
+            className="w-full pl-9 sm:pl-12 pr-4 py-2 sm:py-2.5 bg-white border border-slate-300 rounded-[12px] sm:rounded-2xl font-medium outline-none focus:border-blue-500 text-slate-800 text-[11px] sm:text-base" 
           />
         </div>
         <div className="relative inline-block shrink-0">
           <div className="flex items-center justify-center w-[36px] h-[36px] sm:w-auto sm:h-auto sm:px-4 sm:py-2.5 border border-slate-300 rounded-[12px] sm:rounded-2xl font-medium outline-none bg-white font-bold text-slate-700">
-            <span className="sm:hidden"><Filter size={18} className={catFilter !== 'All' ? 'text-purple-600' : 'text-slate-500'}/></span>
+            <span className="sm:hidden"><Filter size={18} className={catFilter !== 'All' ? 'text-blue-600' : 'text-slate-500'}/></span>
             <span className="hidden sm:inline">{catFilter === 'All' ? 'All Categories' : catFilter}</span>
           </div>
           <select 
@@ -119,7 +119,7 @@ export function AllTasksHistoryTab({
                   <span className="bg-slate-100 px-2 py-0.5 rounded text-xs text-slate-700">{t.category}</span>
                 </td>
                 <td className="px-4 py-3">
-                  <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${t.status==='Completed'?'bg-green-100 text-green-700':t.status==='In Progress'?'bg-amber-100 text-amber-700':t.status==='Draft'?'bg-purple-100 text-purple-700':t.status==='Unsolved'?'bg-slate-200 text-slate-500':'bg-red-100 text-red-700'}`}>
+                  <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${t.status==='Completed'?'bg-green-100 text-green-700':t.status==='In Progress'?'bg-amber-100 text-amber-700':t.status==='Draft'?'bg-blue-100 text-blue-700':t.status==='Unsolved'?'bg-slate-200 text-slate-500':'bg-red-100 text-red-700'}`}>
                     {t.status}
                   </span>
                 </td>
@@ -143,7 +143,7 @@ export function AllTasksHistoryTab({
                   <button 
                     onClick={() => triggerPrint(t)} 
                     title="Print Slip" 
-                    className="touch-target flex items-center justify-center text-purple-600 hover:bg-blue-100 p-2 rounded-lg transition-colors bg-blue-50"
+                    className="touch-target flex items-center justify-center text-blue-600 hover:bg-blue-100 p-2 rounded-lg transition-colors bg-blue-50"
                   >
                     <Printer size={16}/>
                   </button>
@@ -185,7 +185,7 @@ export function AllTasksHistoryTab({
                 {t.id} 
                 {t.isSelfMode && <span className="bg-yellow-300 text-yellow-900 px-1 py-0.5 rounded text-[10px] font-bold uppercase ml-2">Self</span>}
               </span>
-              <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${t.status==='Completed'?'bg-green-100 text-green-700':t.status==='In Progress'?'bg-amber-100 text-amber-700':t.status==='Draft'?'bg-purple-100 text-purple-700':t.status==='Unsolved'?'bg-slate-200 text-slate-500':'bg-red-100 text-red-700'}`}>
+              <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${t.status==='Completed'?'bg-green-100 text-green-700':t.status==='In Progress'?'bg-amber-100 text-amber-700':t.status==='Draft'?'bg-blue-100 text-blue-700':t.status==='Unsolved'?'bg-slate-200 text-slate-500':'bg-red-100 text-red-700'}`}>
                 {t.status}
               </span>
             </div>
@@ -217,7 +217,7 @@ export function AllTasksHistoryTab({
               <button 
                 onClick={() => triggerPrint(t)} 
                 title="Print Slip" 
-                className="flex-1 touch-target flex items-center justify-center text-purple-600 hover:bg-blue-100 p-2 rounded-lg transition-colors bg-blue-50"
+                className="flex-1 touch-target flex items-center justify-center text-blue-600 hover:bg-blue-100 p-2 rounded-lg transition-colors bg-blue-50"
               >
                 <Printer size={16}/>
               </button>

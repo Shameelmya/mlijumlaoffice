@@ -80,7 +80,7 @@ export function AdminGlobalView({
   
   const toggleUnsolved = useCallback((task: Task) => {
     const nextStatus = task.status === 'Unsolved' ? 'Pending' : 'Unsolved';
-    const ev = { id: generateUid(), type: 'update' as const, time: getNow(), by: 'M. A. Razak Master (Admin)', text: `Task marked as ${nextStatus} directly by Admin.` };
+    const ev = { id: generateUid(), type: 'update' as const, time: getNow(), by: 'M. Liju (Admin)', text: `Task marked as ${nextStatus} directly by Admin.` };
     updateTask(task.id, { status: nextStatus, timeline: [...(task.timeline || []), ev] });
   }, [updateTask]);
 
@@ -95,9 +95,9 @@ export function AdminGlobalView({
         });
         const evs = [];
         if (note && note.trim()) {
-          evs.push({ id: generateUid(), type: 'update', time: getNow(), by: 'M. A. Razak Master (Admin)', text: `Completion Note: ${note}` });
+          evs.push({ id: generateUid(), type: 'update', time: getNow(), by: 'M. Liju (Admin)', text: `Completion Note: ${note}` });
         }
-        evs.push({ id: generateUid(), type: 'completed', time: getNow(), by: 'M. A. Razak Master (Admin)', text: 'Task marked as fully completed directly by Admin.' });
+        evs.push({ id: generateUid(), type: 'completed', time: getNow(), by: 'M. Liju (Admin)', text: 'Task marked as fully completed directly by Admin.' });
         updateTask(task.id, { status: 'Completed', officerStatuses: newOffStat, timeline: [...(task.timeline || []), ...evs] });
       }, 
       false, 
@@ -110,7 +110,7 @@ export function AdminGlobalView({
   const togglePriority = useCallback((task: Task) => {
     const p = ['Low', 'Medium', 'High'];
     const nextP = p[(p.indexOf(task.priority || 'Medium') + 1) % 3];
-    const ev = { id: generateUid(), type: 'update' as const, time: getNow(), by: 'M. A. Razak Master (Admin)', text: `Priority changed to ${nextP} directly by Admin.` };
+    const ev = { id: generateUid(), type: 'update' as const, time: getNow(), by: 'M. Liju (Admin)', text: `Priority changed to ${nextP} directly by Admin.` };
     updateTask(task.id, { priority: nextP, timeline: [...(task.timeline || []), ev] });
   }, [updateTask]);
 
@@ -170,14 +170,14 @@ export function AdminGlobalView({
         <div className="hidden md:flex bg-slate-100 p-1 rounded-2xl border border-slate-200 h-fit">
           <button 
             onClick={() => setViewMode('grid')} 
-            className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-white shadow-sm text-purple-600' : 'text-slate-500 hover:text-slate-700'}`} 
+            className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-500 hover:text-slate-700'}`} 
             title="Grid View"
           >
             <LayoutGrid size={18}/>
           </button>
           <button 
             onClick={() => setViewMode('list')} 
-            className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-purple-600' : 'text-slate-500 hover:text-slate-700'}`} 
+            className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-500 hover:text-slate-700'}`} 
             title="List View"
           >
             <LayoutList size={18}/>
@@ -249,7 +249,7 @@ export function AdminGlobalView({
                     <span className="bg-slate-100 px-2 py-0.5 rounded text-xs text-slate-700">{t.category}</span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${t.status==='Completed'?'bg-green-100 text-green-700':t.status==='Partially Completed'?'bg-emerald-100 text-emerald-700':t.status==='In Progress'?'bg-amber-100 text-amber-700':t.status==='Draft'?'bg-purple-100 text-purple-700':t.status==='Unsolved'?'bg-slate-200 text-slate-500':'bg-red-100 text-red-700'}`}>
+                    <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${t.status==='Completed'?'bg-green-100 text-green-700':t.status==='Partially Completed'?'bg-emerald-100 text-emerald-700':t.status==='In Progress'?'bg-amber-100 text-amber-700':t.status==='Draft'?'bg-blue-100 text-blue-700':t.status==='Unsolved'?'bg-slate-200 text-slate-500':'bg-red-100 text-red-700'}`}>
                       {t.status}
                     </span>
                   </td>
@@ -375,7 +375,7 @@ const AdminTaskCard = React.memo(({
     if (s === 'Completed') return 'text-green-600';
     if (s === 'D Finished') return 'text-emerald-600';
     if (s === 'In Progress') return 'text-amber-600';
-    if (s === 'Draft') return 'text-purple-600';
+    if (s === 'Draft') return 'text-blue-600';
     return 'text-red-600';
   };
 
@@ -433,19 +433,19 @@ const AdminTaskCard = React.memo(({
           <div className="flex flex-wrap justify-end items-center gap-2 lg:gap-1">
             <div className="flex gap-3 lg:gap-1 items-center">
               {t.status !== 'Draft' && (
-                <button onClick={(e) => { e.stopPropagation(); triggerConfirm('Confirm Action', 'Change status to Draft?', () => { const newOffStat = {...t.officerStatuses}; (t.assignedTo || []).forEach(id => newOffStat[id] = 'Draft'); const ev = { id: generateUid(), type: 'update' as const, time: getNow(), by: 'M. A. Razak Master (Admin)', text: 'Task marked as Draft directly by Admin.' }; updateTask(t.id, { status: 'Draft', officerStatuses: newOffStat, timeline: [...(t.timeline || []), ev] }); }, false, 'Yes, Change'); }} title="Mark as Draft" className="group flex items-center justify-center transition-colors">
-                  <span className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-purple-300 text-purple-600 text-[9px] sm:text-[10px] font-bold lg:hidden group-hover:bg-purple-50">DR</span>
-                  <span className="hidden lg:flex text-purple-400 group-hover:text-purple-600 group-hover:bg-purple-50 p-1 rounded"><FileEdit size={12}/></span>
+                <button onClick={(e) => { e.stopPropagation(); triggerConfirm('Confirm Action', 'Change status to Draft?', () => { const newOffStat = {...t.officerStatuses}; (t.assignedTo || []).forEach(id => newOffStat[id] = 'Draft'); const ev = { id: generateUid(), type: 'update' as const, time: getNow(), by: 'M. Liju (Admin)', text: 'Task marked as Draft directly by Admin.' }; updateTask(t.id, { status: 'Draft', officerStatuses: newOffStat, timeline: [...(t.timeline || []), ev] }); }, false, 'Yes, Change'); }} title="Mark as Draft" className="group flex items-center justify-center transition-colors">
+                  <span className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-blue-300 text-blue-600 text-[9px] sm:text-[10px] font-bold lg:hidden group-hover:bg-blue-50">DR</span>
+                  <span className="hidden lg:flex text-blue-400 group-hover:text-blue-600 group-hover:bg-blue-50 p-1 rounded"><FileEdit size={12}/></span>
                 </button>
               )}
               {t.status !== 'Local Work' && (
-                <button onClick={(e) => { e.stopPropagation(); triggerConfirm('Confirm Action', 'Change status to Local Work?', () => { const ev = { id: generateUid(), type: 'update' as const, time: getNow(), by: 'M. A. Razak Master (Admin)', text: 'Task marked as Local Work directly by Admin.' }; updateTask(t.id, { status: 'Local Work', assignedTo: [], officerStatuses: {}, timeline: [...(t.timeline || []), ev] }); }, false, 'Yes, Change'); }} title="Mark as Local Work" className="group flex items-center justify-center transition-colors">
+                <button onClick={(e) => { e.stopPropagation(); triggerConfirm('Confirm Action', 'Change status to Local Work?', () => { const ev = { id: generateUid(), type: 'update' as const, time: getNow(), by: 'M. Liju (Admin)', text: 'Task marked as Local Work directly by Admin.' }; updateTask(t.id, { status: 'Local Work', assignedTo: [], officerStatuses: {}, timeline: [...(t.timeline || []), ev] }); }, false, 'Yes, Change'); }} title="Mark as Local Work" className="group flex items-center justify-center transition-colors">
                   <span className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-slate-300 text-slate-600 text-[9px] sm:text-[10px] font-bold lg:hidden group-hover:bg-[#F4F7FB]">LW</span>
                   <span className="hidden lg:flex text-slate-400 group-hover:text-slate-600 group-hover:bg-slate-100 p-1 rounded"><MapPin size={12}/></span>
                 </button>
               )}
               {t.status !== 'Pending' && (
-                <button onClick={(e) => { e.stopPropagation(); triggerConfirm('Confirm Action', 'Change status to Pending?', () => { const newOffStat = {...t.officerStatuses}; (t.assignedTo || []).forEach(id => newOffStat[id] = 'Pending'); const ev = { id: generateUid(), type: 'update' as const, time: getNow(), by: 'M. A. Razak Master (Admin)', text: 'Task marked as Pending directly by Admin.' }; updateTask(t.id, { status: 'Pending', officerStatuses: newOffStat, timeline: [...(t.timeline || []), ev] }); }, false, 'Yes, Change'); }} title="Mark as Pending" className="group flex items-center justify-center transition-colors">
+                <button onClick={(e) => { e.stopPropagation(); triggerConfirm('Confirm Action', 'Change status to Pending?', () => { const newOffStat = {...t.officerStatuses}; (t.assignedTo || []).forEach(id => newOffStat[id] = 'Pending'); const ev = { id: generateUid(), type: 'update' as const, time: getNow(), by: 'M. Liju (Admin)', text: 'Task marked as Pending directly by Admin.' }; updateTask(t.id, { status: 'Pending', officerStatuses: newOffStat, timeline: [...(t.timeline || []), ev] }); }, false, 'Yes, Change'); }} title="Mark as Pending" className="group flex items-center justify-center transition-colors">
                   <span className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-red-300 text-red-600 text-[9px] sm:text-[10px] font-bold lg:hidden group-hover:bg-red-50">PD</span>
                   <span className="hidden lg:flex text-red-400 group-hover:text-red-600 group-hover:bg-red-50 p-1 rounded"><Clock size={12}/></span>
                 </button>
@@ -473,7 +473,7 @@ const AdminTaskCard = React.memo(({
               return (
                 <button 
                   key={f}
-                  onClick={(e) => { e.stopPropagation(); triggerConfirm('Confirm Action', `Change Follow-up to ${f}?`, () => { const ev = { id: generateUid(), type: 'update' as const, time: getNow(), by: 'M. A. Razak Master (Admin)', text: `Follow-up frequency changed to ${f} directly by Admin.` }; updateTask(t.id, { followUpFrequency: f === 'None' ? '' : f, timeline: [...(t.timeline || []), ev] }); }, false, 'Yes, Change'); }}
+                  onClick={(e) => { e.stopPropagation(); triggerConfirm('Confirm Action', `Change Follow-up to ${f}?`, () => { const ev = { id: generateUid(), type: 'update' as const, time: getNow(), by: 'M. Liju (Admin)', text: `Follow-up frequency changed to ${f} directly by Admin.` }; updateTask(t.id, { followUpFrequency: f === 'None' ? '' : f, timeline: [...(t.timeline || []), ev] }); }, false, 'Yes, Change'); }}
                   className={`px-3 py-1.5 lg:px-1 lg:py-0.5 rounded text-[10px] lg:text-[7px] font-bold transition-colors ${isSelected ? 'text-indigo-600 bg-indigo-50 border border-indigo-200' : 'text-slate-400 hover:text-slate-600 hover:bg-[#F4F7FB] border border-transparent'}`}
                 >
                   {f}
@@ -493,7 +493,7 @@ const AdminTaskCard = React.memo(({
           {!t.isSelfMode && t.personalDetails?.mobileNumber && (
             <a 
               href={`tel:${t.personalDetails.mobileNumber}`} 
-              className="bg-slate-100 p-1.5 rounded-lg text-slate-600 hover:bg-blue-100 hover:text-purple-600 transition-colors"
+              className="bg-slate-100 p-1.5 rounded-lg text-slate-600 hover:bg-blue-100 hover:text-blue-600 transition-colors"
             >
               <Phone size={14}/>
             </a>

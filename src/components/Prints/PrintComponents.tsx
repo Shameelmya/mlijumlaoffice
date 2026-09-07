@@ -134,7 +134,7 @@ export function PrintCompletionLetter({ task }: PrintCompletionLetterProps) {
                 className="hidden font-[cursive] text-3xl text-blue-900 mb-2 italic" 
                 style={{ fontFamily: "'Brush Script MT', cursive" }}
               >
-                M. A. Razak Master
+                M. Liju
               </div>
             </div>
           ) : (
@@ -692,8 +692,8 @@ export function PrintRecentUpdationsReport({ config }: PrintRecentUpdationsRepor
           
           <div className="border-b-2 border-black pb-2 mb-4 shrink-0 flex items-end justify-between">
             <div>
-              <h1 className="text-2xl font-bold uppercase tracking-widest text-black">M. A. Razak Master MLA</h1>
-              <p className="text-xs font-bold uppercase tracking-widest text-gray-500">MLA Office, Kunnamangalam Constituency</p>
+              <h1 className="text-2xl font-bold uppercase tracking-widest text-black">M. Liju MLA</h1>
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-500">MLA Office, Kayamkulam Constituency</p>
             </div>
             <div className="text-right">
               <h2 className="text-base font-bold text-gray-700 uppercase tracking-widest">Recent Updations</h2>

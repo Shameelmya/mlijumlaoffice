@@ -334,7 +334,7 @@ export function TaskDetailsModal({
             </h2>
             <div className="flex items-center gap-3 mt-1">
               <p className="text-xs text-slate-400 font-medium tracking-widest uppercase">Ref: {task.id}</p>
-              {currentUser.name === 'M. A. Razak Master (MLA)' && (
+              {currentUser.name === 'M. Liju (MLA)' && (
                 <div className="flex items-center gap-2 border-l border-slate-700 pl-3">
                   <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Follow-up:</span>
                   <select
@@ -408,7 +408,7 @@ export function TaskDetailsModal({
                <>
                  <button 
                    onClick={() => triggerDetailsPrint(task)} 
-                   className="p-2 bg-purple-600 hover:bg-purple-700 hover:-translate-y-0.5 transition-all duration-300 text-white shadow-sm rounded-lg transition-colors text-slate-300 hover:text-white" 
+                   className="p-2 bg-blue-600 hover:bg-blue-700 hover:-translate-y-0.5 transition-all duration-300 text-white shadow-sm rounded-lg transition-colors text-slate-300 hover:text-white" 
                    title="Print Details"
                  >
                    <Printer size={18}/>
@@ -460,14 +460,14 @@ export function TaskDetailsModal({
                            );
                          }
                        }} 
-                       className={`px-4 py-2 text-white text-sm font-bold rounded-lg shadow-sm flex items-center gap-2 ${task.isSignedByMLA ? 'bg-orange-600 hover:bg-orange-700' : 'bg-purple-600 hover:bg-purple-700 hover:-translate-y-0.5 transition-all duration-300'}`}
+                       className={`px-4 py-2 text-white text-sm font-bold rounded-lg shadow-sm flex items-center gap-2 ${task.isSignedByMLA ? 'bg-orange-600 hover:bg-orange-700' : 'bg-blue-600 hover:bg-blue-700 hover:-translate-y-0.5 transition-all duration-300'}`}
                      >
                        <PenTool size={16}/> {task.isSignedByMLA ? 'Remove MLA Signature' : 'Sign Completion Letter'}
                      </button>
                    )}
                    <button 
                      onClick={() => triggerDetailsPrint({ ...task, isCompletionLetter: true })} 
-                     className={`px-4 py-2 text-white text-sm font-bold rounded-lg shadow-sm flex items-center gap-2 ${task.isSignedByMLA ? 'bg-purple-600 hover:bg-purple-700' : 'bg-slate-500 hover:bg-slate-600'}`}
+                     className={`px-4 py-2 text-white text-sm font-bold rounded-lg shadow-sm flex items-center gap-2 ${task.isSignedByMLA ? 'bg-blue-600 hover:bg-blue-700' : 'bg-slate-500 hover:bg-slate-600'}`}
                    >
                      <FileSignature size={16}/> {task.isSignedByMLA ? 'Print / PDF Completion Letter' : 'Print Draft (Unverified)'}
                    </button>
@@ -493,7 +493,7 @@ export function TaskDetailsModal({
                    <option value="Local Work">Local Work</option>
                  </select>
                ) : (
-                 <span className={`px-3 py-1 rounded font-bold text-sm uppercase tracking-wider ${task.status==='Completed'?'bg-green-100 text-green-700':task.status==='D Finished'?'bg-emerald-100 text-emerald-700':task.status==='In Progress'?'bg-amber-100 text-amber-700':task.status==='Draft'?'bg-purple-100 text-purple-700':task.status==='Unsolved'?'bg-slate-200 text-slate-500':'bg-red-100 text-red-700'}`}>
+                 <span className={`px-3 py-1 rounded font-bold text-sm uppercase tracking-wider ${task.status==='Completed'?'bg-green-100 text-green-700':task.status==='D Finished'?'bg-emerald-100 text-emerald-700':task.status==='In Progress'?'bg-amber-100 text-amber-700':task.status==='Draft'?'bg-blue-100 text-blue-700':task.status==='Unsolved'?'bg-slate-200 text-slate-500':'bg-red-100 text-red-700'}`}>
                    {task.status}
                  </span>
                )}
@@ -508,7 +508,7 @@ export function TaskDetailsModal({
           <div className="grid sm:grid-cols-2 gap-8">
             <div className={`p-5 rounded-2xl border ${cardBg}`}>
                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-widest border-b border-slate-200 pb-2 mb-4 flex items-center gap-2">
-                 <User size={16} className="text-purple-600"/> {task.isSelfMode ? 'Application Info' : 'Citizen Profile'}
+                 <User size={16} className="text-blue-600"/> {task.isSelfMode ? 'Application Info' : 'Citizen Profile'}
                </h3>
                <div className="space-y-3 text-sm">
                  {isEditMode ? (
@@ -647,7 +647,7 @@ export function TaskDetailsModal({
                      <p><span className="font-bold text-slate-500">Name:</span> <span className="font-bold text-slate-800">{task.personalDetails.name}</span> {task.personalDetails.gender && `(${task.personalDetails.gender})`}</p>
                      {task.personalDetails.designation && <p><span className="font-bold text-slate-500">Desig:</span> {task.personalDetails.designation}</p>}
                      {task.personalDetails.referralPerson && <p><span className="font-bold text-slate-500">Ref:</span> {task.personalDetails.referralPerson}</p>}
-                     {!task.isSelfMode && <p className="flex items-center gap-2"><span className="font-bold text-slate-500">Mobile:</span> <a href={`tel:${task.personalDetails.mobileNumber}`} className="font-bold text-purple-600 hover:underline">{task.personalDetails.mobileNumber}</a></p>}
+                     {!task.isSelfMode && <p className="flex items-center gap-2"><span className="font-bold text-slate-500">Mobile:</span> <a href={`tel:${task.personalDetails.mobileNumber}`} className="font-bold text-blue-600 hover:underline">{task.personalDetails.mobileNumber}</a></p>}
                      {task.personalDetails.whatsappNumber && !task.isSelfMode && <p className="flex items-center gap-2"><span className="font-bold text-slate-500">WA:</span> <a href={`https://wa.me/${formatWhatsAppNumber(task.personalDetails.whatsappNumber)}`} target="_blank" rel="noreferrer" className="font-bold text-green-600 hover:underline">{task.personalDetails.whatsappNumber}</a></p>}
                      <p className="pt-2"><span className="font-bold text-slate-500 block mb-1">Address:</span> <span className="font-medium text-slate-700">{[task.personalDetails.houseName, task.personalDetails.place, task.personalDetails.postOffice, task.personalDetails.pinCode, task.personalDetails.localBody, task.personalDetails.wardNumber ? `Ward ${task.personalDetails.wardNumber}` : ''].filter(Boolean).join(', ')}</span></p>
                    </>
@@ -721,7 +721,7 @@ export function TaskDetailsModal({
                           return (
                             <div key={id} className="flex justify-between items-center bg-[#F4F7FB] px-2 py-1 rounded text-xs">
                               <span className="font-bold">{name}</span>
-                              <span className={`font-bold uppercase tracking-wider ${stat==='Completed'?'text-green-600':stat==='Partially Completed'?'text-emerald-600':stat==='In Progress'?'text-amber-600':stat==='Draft'?'text-purple-600':'text-red-500'}`}>
+                              <span className={`font-bold uppercase tracking-wider ${stat==='Completed'?'text-green-600':stat==='Partially Completed'?'text-emerald-600':stat==='In Progress'?'text-amber-600':stat==='Draft'?'text-blue-600':'text-red-500'}`}>
                                 {stat}
                               </span>
                             </div>
@@ -768,7 +768,7 @@ export function TaskDetailsModal({
                             </div>
                             <div className="flex justify-end gap-1">
                               <button onClick={() => setShowReassign(false)} className="px-2 py-1 bg-slate-200 text-slate-700 text-[10px] font-bold rounded">Cancel</button>
-                              <button onClick={handleReassign} className="px-2 py-1 bg-purple-600 text-white text-[10px] font-bold rounded">Confirm</button>
+                              <button onClick={handleReassign} className="px-2 py-1 bg-blue-600 text-white text-[10px] font-bold rounded">Confirm</button>
                             </div>
                           </div>
                         )}
@@ -844,7 +844,7 @@ export function TaskDetailsModal({
                                href={att.url} 
                                target="_blank" 
                                rel="noreferrer" 
-                               className="text-white bg-indigo-500 hover:bg-purple-600 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider transition-colors"
+                               className="text-white bg-indigo-500 hover:bg-blue-600 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider transition-colors"
                              >
                                View
                              </a>
@@ -1007,7 +1007,7 @@ export function TaskDetailsModal({
                         <div className="mt-3 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button 
                             onClick={() => { setEditingTimelineId(item.id); setTimelineEditText(item.text); }} 
-                            className="px-2 py-1 bg-blue-50 text-purple-600 text-[10px] font-bold rounded hover:bg-blue-100 flex items-center gap-1"
+                            className="px-2 py-1 bg-blue-50 text-blue-600 text-[10px] font-bold rounded hover:bg-blue-100 flex items-center gap-1"
                           >
                             <Edit size={10}/> Edit
                           </button>
@@ -1078,7 +1078,7 @@ export function TaskDetailsModal({
                         <div key={idx} className="flex items-center justify-between p-2 bg-[#F4F7FB] border border-slate-200 rounded-2xl">
                           <span className="text-xs font-medium text-slate-700 truncate max-w-[60%]">{name}</span>
                           <div className="flex gap-2">
-                            <a href={url} target="_blank" rel="noreferrer" className="p-1.5 text-purple-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+                            <a href={url} target="_blank" rel="noreferrer" className="p-1.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
                               <ExternalLink size={14}/>
                             </a>
                             <button 
@@ -1109,7 +1109,7 @@ export function TaskDetailsModal({
                 <div className="flex justify-end pt-2 border-t border-blue-150 mt-1">
                   <button 
                     onClick={handleAddUpdate} 
-                    className="bg-purple-600 hover:bg-purple-700 hover:-translate-y-0.5 transition-all duration-300 text-white px-6 py-2 rounded-lg font-bold transition-colors shadow-sm text-sm"
+                    className="bg-blue-600 hover:bg-blue-700 hover:-translate-y-0.5 transition-all duration-300 text-white px-6 py-2 rounded-lg font-bold transition-colors shadow-sm text-sm"
                   >
                     Post Update
                   </button>

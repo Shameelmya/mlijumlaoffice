@@ -1,7 +1,6 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { Shield, ChevronRight, User as UserIcon, Key } from 'lucide-react';
 import { User as UserType } from '../types';
-import { ISLAMIC_QUOTES } from '../utils/constants';
 import { LiveClock } from '../components/Shared/LiveClock';
 import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../services/firebase';
@@ -14,13 +13,15 @@ interface LoginScreenProps {
 export function LoginScreen({ onLogin, users }: LoginScreenProps) {
   const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
   const [password, setPassword] = useState('');
+  const [customEmail, setCustomEmail] = useState('');
+  const [needsCustomEmail, setNeedsCustomEmail] = useState(false);
   const [error, setError] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [keepSignedIn, setKeepSignedIn] = useState(true);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [resetSent, setResetSent] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
-  const activeUsers = users.filter(u => u.enabled);
+  const activeUsers = users.filter(u => u.enabled !== false); // fallback to true if undefined
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -31,38 +32,26 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
       return;
     }
 
-    if (!selectedUser.email) {
-      setError('This user account has not been migrated to secure authentication yet.');
-      return;
-    }
-
     setIsLoggingIn(true);
     try {
       await setPersistence(auth, keepSignedIn ? browserLocalPersistence : browserSessionPersistence);
-      // Try to login with whatever email is in the Firestore document
-      if (selectedUser.email) {
-        await signInWithEmailAndPassword(auth, selectedUser.email, password);
-        onLogin(selectedUser);
-        return; // Success
-      } else {
-        throw new Error("No email in profile"); // Fall down to the catch block to try the fallback
-      }
-    } catch (err: any) {
-      console.log("Primary login failed, trying fallback...", err);
-      // Fallback: If they changed their email in Firestore but Auth still uses the fake email, or if email is missing
-      try {
-        const fallbackEmail = `${selectedUser.id.toLowerCase().replace(/[^a-z0-9]/g, '')}@marazak.local`;
-        if (selectedUser.email !== fallbackEmail) {
-          await signInWithEmailAndPassword(auth, fallbackEmail, password);
-          onLogin(selectedUser);
-          return; // Success on fallback
-        }
-      } catch (fallbackErr: any) {
-        console.error("Fallback login also failed", fallbackErr);
-      }
       
+      let emailToTry = customEmail || `${selectedUser.id.toLowerCase().replace(/[^a-z0-9]/g, '')}@mliju.local`;
+
+      await signInWithEmailAndPassword(auth, emailToTry, password);
+      onLogin(selectedUser);
+    } catch (err: any) {
       console.error(err);
-      setError('Incorrect Password or Login Failed. Please check and try again.');
+      if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found') {
+        if (!needsCustomEmail && !customEmail) {
+          setNeedsCustomEmail(true);
+          setError('If you use a custom email address, please enter it below.');
+        } else {
+          setError('Incorrect Email or Password. Please try again.');
+        }
+      } else {
+        setError('Login Failed: ' + err.message);
+      }
     } finally {
       setIsLoggingIn(false);
     }
@@ -73,8 +62,8 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
       
       {/* Subtle light ambient blobs */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none opacity-60">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-purple-200/40 blur-[120px]"></div>
-        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-fuchsia-200/30 blur-[150px]"></div>
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-200/40 blur-[120px]"></div>
+        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-200/30 blur-[150px]"></div>
       </div>
 
 
@@ -84,13 +73,15 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
         {/* Main Login Card Wrapper */}
         <div className="bg-white/90 backdrop-blur-2xl rounded-[32px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] border border-white max-w-5xl w-full overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[450px] transition-all">
           
-          {/* Left Column: Premium Corporate Purple Gradient */}
-          <div className="md:col-span-5 col-span-1 bg-[#3B0764] text-white flex flex-col justify-end items-center relative overflow-hidden">
+          {/* Left Column: Premium Corporate Blue Gradient */}
+          <div className="md:col-span-5 col-span-1 bg-gradient-to-b from-[#0F172A] to-[#1E3A8A] text-white flex flex-col justify-end items-center relative overflow-hidden">
             
-            <div className="absolute inset-0 z-10 w-full h-full">
+            <div className="absolute inset-0 z-10 w-full h-full opacity-90 mix-blend-overlay">
               <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
             </div>
-
+            <div className="relative z-20 pb-12 px-8 text-center text-white/90 font-light tracking-wide text-sm">
+              <p>MLA Office Management System</p>
+            </div>
           </div>
 
           {/* Right Column */}
@@ -128,13 +119,13 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
                           }}
                           className={`w-full p-5 flex items-center gap-5 border rounded-[28px] text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.06)] cursor-pointer group ${
                             isAdmin 
-                              ? 'bg-purple-50/50 border-purple-100 hover:bg-purple-50 hover:border-purple-200' 
+                              ? 'bg-blue-50/50 border-blue-100 hover:bg-blue-50 hover:border-blue-200' 
                               : 'bg-slate-50 border-slate-100 hover:bg-slate-100'
                           }`}
                         >
                           {/* Profile rounded icon area */}
                           <div className={`h-14 w-14 rounded-[20px] flex items-center justify-center shrink-0 shadow-sm transition-transform group-hover:scale-110 ${
-                            isAdmin ? 'bg-gradient-to-br from-purple-600 to-fuchsia-600 text-white' : 'bg-white text-slate-400 border border-slate-200'
+                            isAdmin ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white' : 'bg-white text-slate-400 border border-slate-200'
                           }`}>
                             {isAdmin ? <Shield size={24} /> : <UserIcon size={24} />}
                           </div>
@@ -175,7 +166,7 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
 
                   {/* Profile Indicator Card */}
                   <div className="bg-slate-50 border border-slate-100 p-5 rounded-[28px] flex items-center gap-5 shadow-sm">
-                    <div className="h-14 w-14 rounded-[20px] flex items-center justify-center shrink-0 bg-gradient-to-br from-purple-600 to-fuchsia-600 text-white shadow-sm">
+                    <div className="h-14 w-14 rounded-[20px] flex items-center justify-center shrink-0 bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-sm">
                       {selectedUser.role === 'admin' ? <Shield size={24} /> : <UserIcon size={24} />}
                     </div>
                     <div className="text-left">
@@ -197,6 +188,20 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
 
                   {/* Password Entry Area */}
                   <form onSubmit={handleSubmit} className="space-y-4">
+                    {needsCustomEmail && (
+                      <div className="relative group">
+                        <input 
+                          type="email" 
+                          placeholder="Your email address" 
+                          value={customEmail} 
+                          onChange={e => {
+                            setCustomEmail(e.target.value);
+                            setError('');
+                          }}
+                          className="w-full px-6 py-5 bg-slate-50 border border-slate-200 rounded-[24px] font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-lg tracking-widest text-center sm:text-left shadow-inner placeholder:text-slate-300" 
+                        />
+                      </div>
+                    )}
                     <div className="relative group">
                       <input 
                         type={showPass ? 'text' : 'password'} 
@@ -206,15 +211,15 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
                           setPassword(e.target.value);
                           setError('');
                         }}
-                        autoFocus
-                        className="w-full px-6 py-5 bg-slate-50 border border-slate-200 rounded-[24px] font-bold text-slate-800 outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all text-lg tracking-widest text-center sm:text-left shadow-inner placeholder:text-slate-300" 
+                        autoFocus={!needsCustomEmail}
+                        className="w-full px-6 py-5 bg-slate-50 border border-slate-200 rounded-[24px] font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-lg tracking-widest text-center sm:text-left shadow-inner placeholder:text-slate-300" 
                       />
                       
                       {password && (
                         <button 
                           type="button" 
                           onClick={() => setShowPass(!showPass)} 
-                          className="absolute right-5 top-1/2 -translate-y-1/2 text-sm font-bold text-purple-600 hover:text-purple-700 outline-none cursor-pointer px-3 py-1 bg-purple-50 rounded-lg"
+                          className="absolute right-5 top-1/2 -translate-y-1/2 text-sm font-bold text-blue-600 hover:text-blue-700 outline-none cursor-pointer px-3 py-1 bg-blue-50 rounded-lg"
                         >
                           {showPass ? 'HIDE' : 'SHOW'}
                         </button>
@@ -228,7 +233,7 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
                           id="keepSignedIn" 
                           checked={keepSignedIn} 
                           onChange={(e) => setKeepSignedIn(e.target.checked)}
-                          className="w-4 h-4 rounded border-slate-300 text-purple-600 focus:ring-purple-500 cursor-pointer"
+                          className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                         />
                         <label htmlFor="keepSignedIn" className="text-sm font-bold text-slate-500 cursor-pointer select-none">
                           Keep me signed in
@@ -260,7 +265,7 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
                             setIsResetting(false);
                           }
                         }}
-                        className="text-xs font-bold text-purple-600 hover:text-purple-800 transition-colors cursor-pointer"
+                        className="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors cursor-pointer"
                       >
                         {resetSent ? 'Email Sent!' : isResetting ? 'Sending...' : 'Forgot Password?'}
                       </button>
@@ -269,7 +274,7 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
                     <button 
                       type="submit" 
                       disabled={isLoggingIn}
-                      className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-bold py-4 px-8 rounded-[20px] transition-all transform hover:-translate-y-0.5 shadow-[0_12px_24px_rgba(147,51,234,0.25)] flex items-center justify-center gap-3 text-lg disabled:opacity-70 disabled:hover:translate-y-0"
+                      className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 px-8 rounded-[20px] transition-all transform hover:-translate-y-0.5 shadow-[0_12px_24px_rgba(37,99,235,0.25)] flex items-center justify-center gap-3 text-lg disabled:opacity-70 disabled:hover:translate-y-0"
                     >
                       {isLoggingIn ? 'Verifying...' : 'Sign In Securely'} <ChevronRight size={20} />
                     </button>

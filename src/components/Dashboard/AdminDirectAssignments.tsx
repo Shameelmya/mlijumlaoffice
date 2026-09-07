@@ -71,13 +71,13 @@ export function AdminDirectAssignments({
       officerStatuses: {},
       isSignedByMLA: false,
       createdAt: getNow(),
-      createdBy: 'M. A. Razak Master',
+      createdBy: 'M. Liju',
       createdByUid: 'admin',
       timeline: [{
         id: generateUid(),
         type: 'created',
         time: getNow(),
-        by: 'M. A. Razak Master',
+        by: 'M. Liju',
         text: 'Direct Assignment Created'
       }]
     };
@@ -113,7 +113,7 @@ export function AdminDirectAssignments({
                 </label>
               ))}
             </div>
-            <button type="submit" className="w-full bg-purple-600 text-white font-bold py-3 rounded-2xl shadow hover:bg-purple-700 transition-colors">
+            <button type="submit" className="w-full bg-blue-600 text-white font-bold py-3 rounded-2xl shadow hover:bg-blue-700 transition-colors">
               Assign Work
             </button>
           </div>

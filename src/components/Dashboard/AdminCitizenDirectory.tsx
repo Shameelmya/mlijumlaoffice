@@ -122,13 +122,13 @@ export function AdminCitizenDirectory({
           </button>
           <button 
             onClick={() => triggerCitizenPrint(citizensData)} 
-            className="bg-purple-600 text-white hover:bg-purple-700 hover:-translate-y-0.5 transition-all duration-300 shadow-sm px-4 py-2 rounded-2xl text-sm font-bold flex items-center gap-2 transition-colors"
+            className="bg-blue-600 text-white hover:bg-blue-700 hover:-translate-y-0.5 transition-all duration-300 shadow-sm px-4 py-2 rounded-2xl text-sm font-bold flex items-center gap-2 transition-colors"
           >
             <Printer size={16}/> Print
           </button>
           <button 
             onClick={() => triggerDownloadPDF(citizensData)} 
-            className="bg-purple-600 text-white hover:bg-purple-700 px-4 py-2 rounded-2xl text-sm font-bold flex items-center gap-2 transition-colors"
+            className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-2xl text-sm font-bold flex items-center gap-2 transition-colors"
           >
             <Download size={16}/> PDF
           </button>
@@ -206,7 +206,7 @@ export function AdminCitizenDirectory({
                   <div className="flex items-center justify-center gap-2">
                     <button 
                       onClick={() => onCitizenClick?.(c.mobileNumber)}
-                      className="bg-purple-100 hover:bg-purple-200 text-purple-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors"
+                      className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors"
                       title="Full Data View"
                     >
                       <Eye size={14}/> View

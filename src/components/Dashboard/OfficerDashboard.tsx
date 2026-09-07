@@ -52,10 +52,10 @@ interface OfficerDashboardProps {
 
 const StatCard = ({ title, value, color, icon, onClick }: any) => {
   const colors = {
-    blue: 'bg-blue-50 text-purple-600 border-blue-200',
+    blue: 'bg-blue-50 text-blue-600 border-blue-200',
     indigo: 'bg-indigo-50 text-indigo-600 border-indigo-200',
     green: 'bg-green-50 text-green-600 border-green-200',
-    purple: 'bg-purple-50 text-purple-600 border-purple-200',
+    purple: 'bg-blue-50 text-blue-600 border-blue-200',
     red: 'bg-red-50 text-red-600 border-red-200',
   };
   return (
@@ -160,7 +160,7 @@ export function OfficerDashboard({
         {hasGlobalOverviewPermission && (
           <button 
             onClick={() => { setActiveTab('overview'); setGlobalSearch(''); }} 
-          className={`flex-1 px-2 py-2 md:py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 whitespace-nowrap ${activeTab === 'overview' ? 'bg-purple-600 text-white shadow-md' : 'text-slate-600 hover:bg-[#F4F7FB]'}`}
+          className={`flex-1 px-2 py-2 md:py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 whitespace-nowrap ${activeTab === 'overview' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 hover:bg-[#F4F7FB]'}`}
           >
             <Eye size={15} /> Global Overview
           </button>
@@ -401,7 +401,7 @@ export function OfficerDashboard({
       {/* Mobile Bottom Navigation */}
       {/* Mobile Bottom Navigation */}
       {/* Mobile Bottom Navigation */}
-      <div className="md:hidden fixed bottom-3 left-4 right-4 h-[85px] bg-gradient-to-r from-purple-800 to-[#2d1b4e] rounded-[24px] shadow-[0_8px_32px_rgba(45,27,78,0.4)] border border-white/10 z-[90] flex justify-around items-center px-1">
+      <div className="md:hidden fixed bottom-3 left-4 right-4 h-[85px] bg-gradient-to-r from-blue-800 to-[#2d1b4e] rounded-[24px] shadow-[0_8px_32px_rgba(45,27,78,0.4)] border border-white/10 z-[90] flex justify-around items-center px-1">
           <button 
             onClick={() => { setActiveTab('recent'); setGlobalSearch(''); setMobileSettingsOpen(false); }} 
             className={`flex flex-col items-center justify-center gap-1 w-[58px] transition-colors ${activeTab === 'recent' && !mobileSettingsOpen ? 'text-white' : 'text-white/60 hover:text-white/80'}`}
@@ -416,7 +416,7 @@ export function OfficerDashboard({
             onClick={() => { setActiveTab('input'); setGlobalSearch(''); setMobileSettingsOpen(false); }} 
             className={`flex flex-col items-center justify-center gap-1 w-[58px] transition-colors ${activeTab === 'input' && !mobileSettingsOpen ? 'text-white' : 'text-white/60 hover:text-white/80'}`}
           >
-            <div className={`flex items-center justify-center w-[48px] h-[48px] rounded-[16px] transition-all ${activeTab === 'input' && !mobileSettingsOpen ? 'bg-white shadow-[0_4px_12px_rgba(0,0,0,0.15)] text-purple-600' : 'bg-white/15 text-white/80'}`}>
+            <div className={`flex items-center justify-center w-[48px] h-[48px] rounded-[16px] transition-all ${activeTab === 'input' && !mobileSettingsOpen ? 'bg-white shadow-[0_4px_12px_rgba(0,0,0,0.15)] text-blue-600' : 'bg-white/15 text-white/80'}`}>
               <Plus size={24} strokeWidth={2.5} />
             </div>
             <span className="text-xs font-semibold leading-none">Input</span>
@@ -462,14 +462,14 @@ export function OfficerDashboard({
               onClick={() => { setActiveTab('direct_worker'); setGlobalSearch(''); setMobileSettingsOpen(false); }} 
               className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold text-sm transition-colors"
             >
-              <Zap size={20} className="text-purple-600" /> Assignments from MLA
+              <Zap size={20} className="text-blue-600" /> Assignments from MLA
             </button>
             {hasGlobalOverviewPermission && (
               <button 
                 onClick={() => { setActiveTab('overview'); setGlobalSearch(''); setMobileSettingsOpen(false); }} 
                 className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold text-sm transition-colors"
               >
-                <Eye size={20} className="text-purple-600" /> Global Overview
+                <Eye size={20} className="text-blue-600" /> Global Overview
               </button>
             )}
             {user.canSeeRecentUpdations && (

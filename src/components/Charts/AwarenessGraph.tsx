@@ -21,7 +21,7 @@ export const AwarenessGraph = React.memo(({ total, completed, drafted }: Awarene
           <span className="text-xs font-bold text-green-600 flex items-center gap-1">
             <CheckCircle size={12}/> Completed: {completed}
           </span>
-          <span className="text-xs font-bold text-purple-600 flex items-center gap-1">
+          <span className="text-xs font-bold text-blue-600 flex items-center gap-1">
             <Paperclip size={12}/> Drafts: {drafted}
           </span>
           <span className="text-xs font-bold text-amber-600 flex items-center gap-1">
@@ -35,7 +35,7 @@ export const AwarenessGraph = React.memo(({ total, completed, drafted }: Awarene
           style={{ width: `${compPercent}%` }}
         ></div>
         <div 
-          className="bg-purple-500 h-full transition-all duration-1000" 
+          className="bg-blue-500 h-full transition-all duration-1000" 
           style={{ width: `${draftPercent}%` }}
         ></div>
         <div 

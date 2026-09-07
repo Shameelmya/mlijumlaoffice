@@ -25,7 +25,7 @@ export const db = getFirestore(app);
 
 export const appId = (typeof __app_id !== 'undefined' && __app_id) || 
                      (typeof window !== 'undefined' && window.__app_id) || 
-                     'ma-razak-master-office';
+                     'm-liju-mla-office-system';
 
 export function getColRef(colName: string) {
   return collection(db, 'artifacts', appId, 'public', 'data', colName);

@@ -65,10 +65,10 @@ interface AdminDashboardProps {
 
 const StatCard = ({ title, value, color, icon, onClick }: any) => {
   const colors = {
-    blue: 'bg-blue-50 text-purple-600 border-blue-200',
+    blue: 'bg-blue-50 text-blue-600 border-blue-200',
     indigo: 'bg-indigo-50 text-indigo-600 border-indigo-200',
     green: 'bg-green-50 text-green-600 border-green-200',
-    purple: 'bg-purple-50 text-purple-600 border-purple-200',
+    purple: 'bg-blue-50 text-blue-600 border-blue-200',
     red: 'bg-red-50 text-red-600 border-red-200',
     slate: 'bg-slate-50 text-slate-600 border-slate-200',
   };
@@ -176,7 +176,7 @@ export function AdminDashboard({
         </button>
         <button 
           onClick={() => { setActiveTab('overview'); setGlobalSearch(''); setInitialOfficerFilter(''); }} 
-          className={`flex-1 justify-center px-3 py-1.5 md:px-4 md:py-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 whitespace-nowrap ${activeTab === 'overview' ? 'bg-purple-600 text-white shadow-md' : 'text-slate-600 hover:bg-[#F4F7FB]'}`}
+          className={`flex-1 justify-center px-3 py-1.5 md:px-4 md:py-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 whitespace-nowrap ${activeTab === 'overview' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 hover:bg-[#F4F7FB]'}`}
         >
           Global Overview
         </button>
@@ -188,7 +188,7 @@ export function AdminDashboard({
         </button>
         <button 
           onClick={() => { setActiveTab('input'); setGlobalSearch(''); }} 
-          className={`flex-1 justify-center px-3 py-1.5 md:px-4 md:py-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 whitespace-nowrap ${activeTab === 'input' ? 'bg-purple-600 text-white shadow' : 'text-slate-600 hover:bg-[#F4F7FB]'}`}
+          className={`flex-1 justify-center px-3 py-1.5 md:px-4 md:py-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 whitespace-nowrap ${activeTab === 'input' ? 'bg-blue-600 text-white shadow' : 'text-slate-600 hover:bg-[#F4F7FB]'}`}
         >
           <Plus size={13}/> Register Input
         </button>
@@ -200,14 +200,14 @@ export function AdminDashboard({
         </button>
         <button 
           onClick={() => { setActiveTab('direct'); setGlobalSearch(''); }} 
-          className={`flex-1 justify-center px-3 py-1.5 md:px-4 md:py-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 whitespace-nowrap ${activeTab === 'direct' ? 'bg-purple-600 text-white shadow' : 'text-slate-600 hover:bg-[#F4F7FB]'}`}
+          className={`flex-1 justify-center px-3 py-1.5 md:px-4 md:py-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 whitespace-nowrap ${activeTab === 'direct' ? 'bg-blue-600 text-white shadow' : 'text-slate-600 hover:bg-[#F4F7FB]'}`}
         >
           <Zap size={13}/> Direct Desk
         </button>
         {currentUser.role === 'admin' && (
           <button 
             onClick={() => { setActiveTab('users'); setGlobalSearch(''); }} 
-            className={`flex-1 justify-center px-3 py-1.5 md:px-4 md:py-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 whitespace-nowrap ${activeTab === 'users' ? 'bg-purple-600 text-white shadow' : 'text-slate-600 hover:bg-[#F4F7FB]'}`}
+            className={`flex-1 justify-center px-3 py-1.5 md:px-4 md:py-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 whitespace-nowrap ${activeTab === 'users' ? 'bg-blue-600 text-white shadow' : 'text-slate-600 hover:bg-[#F4F7FB]'}`}
           >
             <Eye size={13}/> Manage Officers
           </button>
@@ -277,7 +277,7 @@ export function AdminDashboard({
                 )}
                 <button 
                   onClick={() => { setReportModalOpen(true); loadArchive(); }} 
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2.5 rounded-2xl text-sm font-bold shadow flex items-center gap-2 transition-colors"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-2xl text-sm font-bold shadow flex items-center gap-2 transition-colors"
                 >
                   <FileOutput size={18}/> Generate Master Report
                 </button>
@@ -303,7 +303,7 @@ export function AdminDashboard({
             )}
             <button 
               onClick={() => { setReportModalOpen(true); loadArchive(); }} 
-              className="flex-1 justify-center bg-purple-600 hover:bg-purple-700 text-white px-1 sm:px-2 py-2 rounded-[14px] text-[10px] font-bold shadow flex items-center gap-1 transition-colors leading-tight whitespace-nowrap"
+              className="flex-1 justify-center bg-blue-600 hover:bg-blue-700 text-white px-1 sm:px-2 py-2 rounded-[14px] text-[10px] font-bold shadow flex items-center gap-1 transition-colors leading-tight whitespace-nowrap"
             >
               <FileOutput size={12} className="hidden sm:inline-block"/> Master Report
             </button>
@@ -502,7 +502,7 @@ export function AdminDashboard({
       )}
 
       {/* Mobile Bottom Navigation */}
-      <div className="md:hidden fixed bottom-3 left-4 right-4 h-[85px] bg-gradient-to-r from-purple-800 to-[#2d1b4e] rounded-[24px] shadow-[0_8px_32px_rgba(45,27,78,0.4)] border border-white/10 z-[90] flex justify-around items-center px-1">
+      <div className="md:hidden fixed bottom-3 left-4 right-4 h-[85px] bg-gradient-to-r from-blue-800 to-[#2d1b4e] rounded-[24px] shadow-[0_8px_32px_rgba(45,27,78,0.4)] border border-white/10 z-[90] flex justify-around items-center px-1">
           <button 
             onClick={() => { setActiveTab('alerts'); setGlobalSearch(''); setMobileSettingsOpen(false); }} 
             className={`flex flex-col items-center justify-center gap-1 w-[58px] transition-colors ${activeTab === 'alerts' && !mobileSettingsOpen ? 'text-white' : 'text-white/60 hover:text-white/80'}`}
@@ -517,7 +517,7 @@ export function AdminDashboard({
             onClick={() => { setActiveTab('input'); setGlobalSearch(''); setMobileSettingsOpen(false); }} 
             className={`flex flex-col items-center justify-center gap-1 w-[58px] transition-colors ${activeTab === 'input' && !mobileSettingsOpen ? 'text-white' : 'text-white/60 hover:text-white/80'}`}
           >
-            <div className={`flex items-center justify-center w-[48px] h-[48px] rounded-[16px] transition-all ${activeTab === 'input' && !mobileSettingsOpen ? 'bg-white shadow-[0_4px_12px_rgba(0,0,0,0.15)] text-purple-600' : 'bg-white/15 text-white/80'}`}>
+            <div className={`flex items-center justify-center w-[48px] h-[48px] rounded-[16px] transition-all ${activeTab === 'input' && !mobileSettingsOpen ? 'bg-white shadow-[0_4px_12px_rgba(0,0,0,0.15)] text-blue-600' : 'bg-white/15 text-white/80'}`}>
               <Plus size={24} strokeWidth={2.5} />
             </div>
             <span className="text-xs font-semibold leading-none">Input</span>
@@ -563,7 +563,7 @@ export function AdminDashboard({
               onClick={() => { setActiveTab('direct'); setGlobalSearch(''); setMobileSettingsOpen(false); }} 
               className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold text-sm transition-colors"
             >
-              <Zap size={20} className="text-purple-600" /> Direct Desk
+              <Zap size={20} className="text-blue-600" /> Direct Desk
             </button>
             <button 
               onClick={() => { setActiveTab('recent_updations'); setGlobalSearch(''); loadArchive(); setMobileSettingsOpen(false); }} 

@@ -162,7 +162,7 @@ export function AdminDatabase({
       "This will create secure Firebase Auth accounts for all users and remove their plaintext passwords. Make sure the app is in maintenance mode.",
       async () => {
         try {
-          const adminEmailInput = prompt("SECURITY CHECK: Please enter a REAL email address for the Super Admin (M. A. Razak Master). This is required so you can reset or change your password in the future:");
+          const adminEmailInput = prompt("SECURITY CHECK: Please enter a REAL email address for the Super Admin (M. Liju). This is required so you can reset or change your password in the future:");
           if (!adminEmailInput || !adminEmailInput.includes('@')) {
             alert("Migration cancelled. A valid real email address for the Super Admin is required for your safety.");
             return;
@@ -174,7 +174,7 @@ export function AdminDatabase({
 
           for (const u of users) {
             if (!u.email) {
-              const email = u.role === 'admin' ? adminEmailInput : `${u.id.toLowerCase().replace(/[^a-z0-9]/g, '')}@marazak.local`;
+              const email = u.role === 'admin' ? adminEmailInput : `${u.id.toLowerCase().replace(/[^a-z0-9]/g, '')}@mliju.local`;
               const basePass = u.pass || '123456';
               const password = basePass.length < 6 ? basePass.padEnd(6, '0') : basePass;
 
@@ -211,7 +211,7 @@ export function AdminDatabase({
     <div id="admin-database" className="space-y-6 animate-in fade-in">
       <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-8">
         <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2 mb-6">
-          <Download className="text-purple-600"/> Data Backup (Export JSON)
+          <Download className="text-blue-600"/> Data Backup (Export JSON)
         </h2>
         <div className="grid md:grid-cols-2 gap-8 items-start">
           <div>
@@ -226,7 +226,7 @@ export function AdminDatabase({
             </select>
             <button 
               onClick={handleBackup} 
-              className="bg-purple-600 text-white font-bold py-3 px-6 rounded-2xl hover:bg-purple-700 hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2 shadow transition-colors"
+              className="bg-blue-600 text-white font-bold py-3 px-6 rounded-2xl hover:bg-blue-700 hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2 shadow transition-colors"
             >
               <Download size={18}/> Generate & Download JSON
             </button>

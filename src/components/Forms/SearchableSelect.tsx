@@ -42,7 +42,7 @@ export const SearchableSelect = React.memo(({
     <div ref={wrapperRef} className="relative w-full">
       <div 
         onClick={() => setIsOpen(!isOpen)} 
-        className="w-full px-4 py-2.5 bg-[#F4F7FB] border border-slate-200 rounded-2xl font-semibold text-slate-800 cursor-pointer transition-all hover:bg-white focus:bg-white hover:border-purple-500 flex justify-between items-center text-sm"
+        className="w-full px-4 py-2.5 bg-[#F4F7FB] border border-slate-200 rounded-2xl font-semibold text-slate-800 cursor-pointer transition-all hover:bg-white focus:bg-white hover:border-blue-500 flex justify-between items-center text-sm"
       >
         <span className={value ? "text-slate-800" : "text-slate-400 font-normal"}>
           {value || placeholder}
@@ -57,7 +57,7 @@ export const SearchableSelect = React.memo(({
               value={search} 
               onChange={e => setSearch(e.target.value)} 
               placeholder="Search..." 
-              className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm font-semibold outline-none focus:border-purple-500 bg-white" 
+              className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm font-semibold outline-none focus:border-blue-500 bg-white" 
               onClick={e => e.stopPropagation()} 
               autoFocus
             />
@@ -74,7 +74,7 @@ export const SearchableSelect = React.memo(({
                 className={`px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-blue-50 cursor-pointer transition-colors flex justify-between items-center ${value === c ? 'bg-blue-50 text-blue-700' : ''}`}
               >
                 <span>{c}</span>
-                {value === c && <Check size={14} className="text-purple-600" />}
+                {value === c && <Check size={14} className="text-blue-600" />}
               </div>
             ))}
             {sortedAndFiltered.length === 0 && (
@@ -92,7 +92,7 @@ export const SearchableSelect = React.memo(({
                   onAddNewClick(); 
                   setIsOpen(false); 
                 }} 
-                className="w-full text-xs font-bold text-purple-600 flex items-center justify-center gap-1 hover:text-blue-800 py-1.5 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+                className="w-full text-xs font-bold text-blue-600 flex items-center justify-center gap-1 hover:text-blue-800 py-1.5 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
               >
                 <Plus size={14}/> {addLabel}
               </button>
