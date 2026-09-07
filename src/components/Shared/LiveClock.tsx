@@ -25,7 +25,7 @@ export function LiveClock({ className }: LiveClockProps) {
         })}
       </span>
       <Clock size={14} className="hidden sm:block ml-1 opacity-70" />
-      <span className="tracking-widest text-sm">
+      <span>
         {time.toLocaleTimeString('en-IN', {
           hour: '2-digit',
           minute: '2-digit',

@@ -73,8 +73,17 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
 
 
 
-      <div className="flex-1 w-full flex items-center justify-center p-4 sm:p-6 md:p-10 z-10">
+      <div className="flex-1 w-full flex flex-col items-center justify-center p-4 sm:p-6 md:p-10 z-10">
         
+        {/* Quote Above Container Directly on Background */}
+        {dailyQuote && (
+          <div className="w-full max-w-5xl mx-auto mb-6 text-center">
+            <p className="text-base md:text-lg font-medium text-[#1e293b]" style={{ fontFamily: "'Anek Malayalam', sans-serif" }}>
+              {dailyQuote}
+            </p>
+          </div>
+        )}
+
         {/* Main Login Card Wrapper */}
         <div className="bg-white/90 backdrop-blur-2xl rounded-[32px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] border border-white max-w-5xl w-full overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[450px] transition-all">
           
@@ -93,14 +102,6 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
 
             <div className="w-full max-w-md mx-auto mt-2 sm:mt-0">
               
-              {dailyQuote && (
-                <div className="mb-6 bg-indigo-50/70 border border-indigo-100/50 rounded-2xl p-4 text-center">
-                  <p className="text-sm font-medium text-indigo-900" style={{ fontFamily: "'Anek Malayalam', sans-serif" }}>
-                    {dailyQuote}
-                  </p>
-                </div>
-              )}
-
               {/* Profile Cards Selection Grid */}
               {!selectedUser ? (
                 <div className="space-y-4">
