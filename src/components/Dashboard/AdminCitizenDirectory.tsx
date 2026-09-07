@@ -326,15 +326,6 @@ export function AdminCitizenDirectory({
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 mb-1">Referral Person</label>
-                  <input 
-                    type="text" 
-                    value={editingCitizen.referralPerson || ''}
-                    onChange={e => setEditingCitizen({...editingCitizen, referralPerson: e.target.value})}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none focus:border-teal-500"
-                  />
-                </div>
-                <div>
                   <label className="block text-xs font-bold text-slate-500 mb-1">Place</label>
                   <input 
                     type="text" 
@@ -409,7 +400,6 @@ export function AdminCitizenDirectory({
                           wardNumber: editingCitizen.wardNumber,
                           designation: editingCitizen.designation,
                           gender: editingCitizen.gender,
-                          referralPerson: editingCitizen.referralPerson,
                           postOffice: editingCitizen.postOffice,
                           pinCode: editingCitizen.pinCode,
                         }
