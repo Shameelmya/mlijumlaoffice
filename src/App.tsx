@@ -654,9 +654,8 @@ export default function App() {
         authUid = cred.user.uid;
       } catch (err: any) {
         if (err.code === 'auth/email-already-in-use') {
-          console.warn('Email already in use, reusing old auth account.');
-          alert(`Warning: The email ${email} is already linked to a previous officer account. We have restored access, but their OLD password will still apply. They cannot use the new password you just typed unless you change it in Firebase Console.`);
-          authUid = newUser.id; // Fallback or generate a consistent ID since we can't get the UID without Admin SDK, we'll just use their officer ID as their document ID in Firestore.
+          alert(`ERROR: The email "${email}" is already in use by a previously deleted officer. Because of Google Security, you cannot reuse the exact same email unless you manually delete it from the Firebase Console. \n\nPlease create the officer again with a slightly different email (e.g., ${email.replace('@', '2@')}).`);
+          return; // Stop execution, do not save to Firestore
         } else {
           throw err;
         }
