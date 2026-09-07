@@ -27,14 +27,14 @@ export function PrintAcknowledgeSlip({ task }: PrintAcknowledgeSlipProps) {
     >
       <div className="relative z-10 flex-1 flex flex-col">
         <div className="flex justify-between items-start mb-8 text-sm font-medium">
-          <div className="uppercase flex flex-col gap-0.5">
+          <div className="uppercase flex flex-col gap-1 w-2/3 pr-4">
             <p className="font-bold text-black mb-1">To,</p>
             <p className="text-black font-bold">{task.personalDetails.name}</p>
-            {task.personalDetails.houseName && <p className="text-black leading-normal">{task.personalDetails.houseName}</p>}
-            <p className="text-black leading-normal max-w-[250px] whitespace-normal break-words">{[task.personalDetails.place, task.personalDetails.localBody].filter(Boolean).join(', ')}</p>
-            {!task.isSelfMode && <p className="text-black mt-1 font-bold">Phone: {task.personalDetails.mobileNumber}</p>}
+            {task.personalDetails.houseName && <p className="text-black break-words leading-tight">{task.personalDetails.houseName}</p>}
+            <p className="text-black break-words leading-tight">{[task.personalDetails.place, task.personalDetails.localBody].filter(Boolean).join(', ')}</p>
+            {!task.isSelfMode && <p className="text-black mt-1 font-bold block">Phone: {task.personalDetails.mobileNumber}</p>}
           </div>
-          <div className="text-right">
+          <div className="text-right w-1/3">
             <p><span className="font-bold text-gray-600">Date:</span> {formatLetterSendingDate()}</p>
             <p><span className="font-bold text-gray-600">Ref ID:</span> <span className="font-bold">{task.id}</span></p>
           </div>
@@ -45,7 +45,7 @@ export function PrintAcknowledgeSlip({ task }: PrintAcknowledgeSlipProps) {
         <div className="mb-12 text-[15px] leading-loose text-black font-medium text-justify" style={{ fontFamily: "'Noto Serif Malayalam', serif" }}>
            ബഹു. {task.personalDetails.name.toUpperCase()}, <br/><br/>
            {formatMalayalamDate(task.createdAt)} റഫറൻസ് നമ്പർ {task.id} ആയി മേൽപ്പറഞ്ഞ വിഷയത്തിൽ താങ്കൾ നൽകിയ അപേക്ഷ / പരാതി സ്വീകരിച്ച് ഔദ്യോഗികമായി രേഖപ്പെടുത്തിയിട്ടുണ്ട്. <br/><br/>
-           എം. ലിജു എം എൽ എയുടെ ഓഫീസുമായി ബന്ധപ്പെട്ടതിന് നന്ദി.
+           അഡ്വ. എം. ലിജു എം എൽ എയുടെ ഓഫീസുമായി ബന്ധപ്പെട്ടതിന് നന്ദി.
         </div>
         <div className="mt-12 text-right">
           <p className="font-medium text-black mb-2" style={{ fontFamily: "'Noto Serif Malayalam', serif" }}>സ്നേഹത്തോടെ,</p>
@@ -94,14 +94,14 @@ export function PrintCompletionLetter({ task }: PrintCompletionLetterProps) {
       )}
       <div className="relative z-10 flex-1 flex flex-col">
         <div className="flex justify-between items-start mb-8 text-sm font-medium">
-          <div className="uppercase flex flex-col gap-0.5">
+          <div className="uppercase flex flex-col gap-1 w-2/3 pr-4">
             <p className="font-bold text-black mb-1">To,</p>
             <p className="text-black font-bold">{task.personalDetails.name}</p>
-            {task.personalDetails.houseName && <p className="text-black leading-normal">{task.personalDetails.houseName}</p>}
-            <p className="text-black leading-normal max-w-[250px] whitespace-normal break-words">{[task.personalDetails.place, task.personalDetails.localBody].filter(Boolean).join(', ')}</p>
-            {!task.isSelfMode && <p className="text-black mt-1 font-bold">Phone: {task.personalDetails.mobileNumber}</p>}
+            {task.personalDetails.houseName && <p className="text-black break-words leading-tight">{task.personalDetails.houseName}</p>}
+            <p className="text-black break-words leading-tight">{[task.personalDetails.place, task.personalDetails.localBody].filter(Boolean).join(', ')}</p>
+            {!task.isSelfMode && <p className="text-black mt-1 font-bold block">Phone: {task.personalDetails.mobileNumber}</p>}
           </div>
-          <div className="text-right">
+          <div className="text-right w-1/3">
             <p><span className="font-bold text-gray-600">Date:</span> {formatLetterSendingDate()}</p>
             <p><span className="font-bold text-gray-600">Ref ID:</span> <span className="font-bold">{task.id}</span></p>
           </div>
@@ -134,7 +134,7 @@ export function PrintCompletionLetter({ task }: PrintCompletionLetterProps) {
                 className="hidden font-[cursive] text-3xl text-blue-900 mb-2 italic" 
                 style={{ fontFamily: "'Brush Script MT', cursive" }}
               >
-                M. Liju
+                Adv. M Liju
               </div>
             </div>
           ) : (
@@ -143,7 +143,7 @@ export function PrintCompletionLetter({ task }: PrintCompletionLetterProps) {
             </div>
           )}
           <div className="mt-0 border-t border-slate-100 pt-1 inline-block text-right">
-            <p className="font-bold text-black text-sm" style={{ fontFamily: "'Noto Serif Malayalam', serif" }}>എം. ലിജു</p>
+            <p className="font-bold text-black text-sm" style={{ fontFamily: "'Noto Serif Malayalam', serif" }}>അഡ്വ. എം. ലിജു</p>
             <p className="text-sm font-normal text-black mb-1">Member of Legislative Assembly (MLA)</p>
             <p className="text-sm font-normal text-black">Phone: 9037032002</p>
           </div>
@@ -163,7 +163,7 @@ export function PrintTaskDetailsReport({ task, users }: PrintTaskDetailsReportPr
   return (
     <div className="w-full bg-white text-black font-sans p-10 box-border text-[12px]">
       <div className="text-center border-b-2 border-black pb-4 mb-6">
-        <h1 className="text-2xl font-bold uppercase tracking-widest mb-1 text-black">MLA Squad</h1>
+        <h1 className="text-2xl font-bold uppercase tracking-widest mb-1 text-black">Adv. M Liju</h1>
         <h2 className="text-lg font-semibold text-gray-700 uppercase tracking-widest">Detailed Task Report</h2>
       </div>
       <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-300">
@@ -265,7 +265,7 @@ export function PrintMasterReport({ config, tasks, users, categories }: PrintMas
   return (
     <div className="w-full bg-white text-black font-sans p-10 box-border text-[12px]">
       <div className="text-center border-b-2 border-black pb-4 mb-6">
-        <h1 className="text-2xl font-bold uppercase tracking-widest mb-1 text-black">MLA Squad</h1>
+        <h1 className="text-2xl font-bold uppercase tracking-widest mb-1 text-black">Adv. M Liju</h1>
         <h2 className="text-xl font-bold text-gray-800 uppercase tracking-widest">Master Performance Report</h2>
         <p className="mt-2 text-sm text-gray-600 font-bold">
           Period: {config.range === 'all' ? 'All Time' : config.range === '1week' ? 'Last 7 Days' : config.range === '1month' ? 'Last 30 Days' : config.range === '6months' ? 'Last 6 Months' : `${formatDate(config.customStart)} to ${formatDate(config.customEnd)}`}
@@ -387,7 +387,7 @@ export function PrintOfficerReport({ config, tasks }: PrintOfficerReportProps) {
   return (
     <div className="w-full bg-white text-black font-sans p-10 box-border text-[12px]">
       <div className="text-center border-b-2 border-black pb-4 mb-6">
-        <h1 className="text-2xl font-bold uppercase tracking-widest mb-1 text-black">MLA Squad</h1>
+        <h1 className="text-2xl font-bold uppercase tracking-widest mb-1 text-black">Adv. M Liju</h1>
         <h2 className="text-lg font-semibold text-gray-700 uppercase tracking-widest">Officer Performance Report</h2>
         <h3 className="text-xl font-bold mt-1 text-black">{officer.name}</h3>
         <p className="mt-1 text-sm text-gray-600 font-bold">
@@ -452,7 +452,7 @@ export function PrintCitizenDirectory({ citizens }: PrintCitizenDirectoryProps) 
   return (
     <div className="w-full bg-white text-black font-sans p-10 box-border text-[12px]">
       <div className="text-center border-b-2 border-black pb-4 mb-6">
-        <h1 className="text-2xl font-bold uppercase tracking-widest mb-1 text-black">MLA Squad</h1>
+        <h1 className="text-2xl font-bold uppercase tracking-widest mb-1 text-black">Adv. M Liju</h1>
         <h2 className="text-lg font-bold text-gray-700 uppercase tracking-widest">Citizen Directory & Visit Log</h2>
         <p className="mt-1 text-xs text-gray-600 font-bold">Generated: {new Date().toLocaleString('en-IN')}</p>
       </div>
@@ -560,7 +560,7 @@ export function PrintUpdationReport({ config, tasks, users }: PrintUpdationRepor
         <div key={pageIdx} className="pdf-page-chunk bg-white p-8 box-border flex flex-col" style={{ width: '794px', height: '1123px', fontFamily: "'Noto Serif Malayalam', serif" }}>
           {pageIdx === 0 ? (
             <div className="text-center border-b-2 border-black pb-3 mb-4 shrink-0">
-              <h1 className="text-xl font-bold uppercase tracking-widest mb-1">MLA Squad</h1>
+              <h1 className="text-xl font-bold uppercase tracking-widest mb-1">Adv. M Liju</h1>
               <h2 className="text-base font-bold text-gray-700 uppercase tracking-widest">Updation Report</h2>
               <p className="mt-1 text-[10px] font-bold text-gray-500 uppercase">
                 Status: {config.status} | Period: {config.dateRange === 'all' ? 'All Time' : config.dateRange === 'custom' ? `${config.customStartDate ? new Date(config.customStartDate).toLocaleDateString('en-GB') : 'Start'} to ${config.customEndDate ? new Date(config.customEndDate).toLocaleDateString('en-GB') : 'End'}` : config.dateRange === '7days' ? 'Last 7 Days' : config.dateRange === '1month' ? 'Last 1 Month' : config.dateRange === '6months' ? 'Last 6 Months' : 'Last 1 Year'}{config.followUpFrequency && config.followUpFrequency !== 'All' ? ` | Follow-up: ${config.followUpFrequency}` : ''}
@@ -657,7 +657,7 @@ export function PrintUpdationReport({ config, tasks, users }: PrintUpdationRepor
           </div>
 
           <div className="mt-auto border-t border-gray-300 pt-2 text-right text-[9px] font-bold text-gray-400 uppercase tracking-widest shrink-0">
-            Generated on {new Date().toLocaleString('en-IN')} | MLA Squad
+            Generated on {new Date().toLocaleString('en-IN')} | Adv. M Liju
           </div>
         </div>
       ))}
@@ -692,7 +692,7 @@ export function PrintRecentUpdationsReport({ config }: PrintRecentUpdationsRepor
           
           <div className="border-b-2 border-black pb-2 mb-4 shrink-0 flex items-end justify-between">
             <div>
-              <h1 className="text-2xl font-bold uppercase tracking-widest text-black">M. Liju MLA</h1>
+              <h1 className="text-2xl font-bold uppercase tracking-widest text-black">Adv. M Liju MLA</h1>
               <p className="text-xs font-bold uppercase tracking-widest text-gray-500">MLA Office, Kayamkulam Constituency</p>
             </div>
             <div className="text-right">
@@ -734,7 +734,7 @@ export function PrintRecentUpdationsReport({ config }: PrintRecentUpdationsRepor
           </div>
 
           <div className="mt-auto border-t border-gray-300 pt-2 text-right text-[9px] font-bold text-gray-400 uppercase tracking-widest shrink-0">
-            Generated on {new Date().toLocaleString('en-IN')} | MLA Squad
+            Generated on {new Date().toLocaleString('en-IN')} | Adv. M Liju
           </div>
         </div>
       ))}
