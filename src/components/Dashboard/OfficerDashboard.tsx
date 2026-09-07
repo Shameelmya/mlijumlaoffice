@@ -12,6 +12,8 @@ import { AdminGlobalView } from './AdminGlobalView';
 import { RecentUpdationsTab } from './RecentUpdationsTab';
 import { UpdationReportConfigModal } from '../Dialogs/ReportModals';
 import { UpdationReportConfig } from '../../types';
+import { ReportModals } from '../Dialogs/ReportModals';
+import { AdminCitizenDirectory } from './AdminCitizenDirectory';
 import { formatDate } from '../../utils/formatters';
 
 interface OfficerDashboardProps {
@@ -99,7 +101,6 @@ export function OfficerDashboard({
   loadArchive
 }: OfficerDashboardProps) {
   // Extract permissions
-  const hasDraftsPermission = user.canSeeDraftsView || user.canSeeGlobal || false;
   const hasGlobalOverviewPermission = user.canSeeGlobalOverview || user.canSeeGlobal || false;
   const hasReportsPermission = user.canSeeReports || false;
   const hasInputPermission = user.canInput || false;
@@ -194,10 +195,18 @@ export function OfficerDashboard({
             <Ban size={13} className="animate-pulse" /> Rejected ({rejectedTasks.length})
           </button>
         )}
+        {user.canSeeCitizenDirectory && (
+          <button 
+            onClick={() => { setActiveTab('citizen_directory'); setGlobalSearch(''); }} 
+            className={`px-3 py-1.5 md:px-4 md:py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-1 whitespace-nowrap ${activeTab === 'citizen_directory' ? 'bg-indigo-600 text-white shadow' : 'text-indigo-600 hover:bg-indigo-50 bg-indigo-50/60'}`}
+          >
+            Citizen Directory
+          </button>
+        )}
       </div>
 
       {/* Standalone Updation Report Button for Officers without Global Overview Access */}
-      {!hasGlobalOverviewPermission && user.canGenerateUpdationReport && (
+      {!hasGlobalOverviewPermission && user.canSeeReports && (
         <div className="flex justify-end print-hidden -mt-2">
           <button 
             onClick={() => { setUpdationReportModalOpen(true); loadArchive(); }} 
@@ -265,7 +274,7 @@ export function OfficerDashboard({
               <h2 className="text-lg font-bold text-slate-800">Global Overview</h2>
               <p className="text-xs font-semibold text-slate-500">View and print all system-wide inputs based on permissions.</p>
             </div>
-            {user.canGenerateUpdationReport && (
+            {user.canSeeReports && (
               <button 
                 onClick={() => { setUpdationReportModalOpen(true); loadArchive(); }} 
                 className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-2xl text-sm font-bold shadow-md flex items-center gap-2 transition-all hover:scale-105 active:scale-95"
@@ -320,6 +329,15 @@ export function OfficerDashboard({
       )}
 
       {/* 6. History & Reports Tab */}
+      {activeTab === 'citizen_directory' && user.canSeeCitizenDirectory && (
+        <AdminCitizenDirectory 
+          currentUser={user}
+          tasks={tasks}
+          users={users}
+          triggerCitizenPrint={triggerCitizenPrint}
+          triggerCitizenDownload={triggerCitizenDownload}
+        />
+      )}
       {activeTab === 'history' && (
         <AllTasksHistoryTab 
           tasks={hasGlobalOverviewPermission ? tasks : tasks.filter(t => t.createdByUid === user.id)} 

@@ -191,7 +191,7 @@ export function AdminCitizenDirectory({
           Citizen Directory
           {activeTab === 'directory' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-600 rounded-t-full"></div>}
         </button>
-        {(currentUser?.role === 'admin' || currentUser?.canSeeHelpData) && (
+        {(currentUser?.role === 'admin' || currentUser?.canSeeCitizenDirectory) && (
           <button
             onClick={() => { setActiveTab('help'); setVisibleCount(50); }}
             className={`pb-3 font-bold text-sm sm:text-base transition-colors relative ${activeTab === 'help' ? 'text-emerald-700' : 'text-slate-400 hover:text-slate-600'}`}

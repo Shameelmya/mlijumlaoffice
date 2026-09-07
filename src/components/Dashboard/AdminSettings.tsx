@@ -32,13 +32,11 @@ export function AdminSettings({
     canSeeReports: false,
     canSeeGlobal: false,
     canSeeGlobalOverview: false,
-    canSeeDraftsView: false,
     canEditGlobalOverview: false,
     canEditOwnInputs: false,
     canReassign: false,
-    canGenerateUpdationReport: false,
     canSeeRecentUpdations: false,
-    canSeeHelpData: false
+    canSeeCitizenDirectory: false
   });
 
   const handleToggle = (id: string, field: keyof User) => {
@@ -72,13 +70,11 @@ export function AdminSettings({
       canSeeReports: !!newOffForm.canSeeReports,
       canSeeGlobal: !!newOffForm.canSeeGlobal,
       canSeeGlobalOverview: !!newOffForm.canSeeGlobalOverview,
-      canSeeDraftsView: !!newOffForm.canSeeDraftsView,
       canEditGlobalOverview: !!newOffForm.canEditGlobalOverview,
       canEditOwnInputs: !!newOffForm.canEditOwnInputs,
       canReassign: !!newOffForm.canReassign,
-      canGenerateUpdationReport: !!newOffForm.canGenerateUpdationReport,
       canSeeRecentUpdations: !!newOffForm.canSeeRecentUpdations,
-      canSeeHelpData: !!newOffForm.canSeeHelpData
+      canSeeCitizenDirectory: !!newOffForm.canSeeCitizenDirectory
     };
     await addUser(newUser);
     setNewOffForm({
@@ -91,13 +87,11 @@ export function AdminSettings({
       canSeeReports: false,
       canSeeGlobal: false,
       canSeeGlobalOverview: false,
-      canSeeDraftsView: false,
       canEditGlobalOverview: false,
       canEditOwnInputs: false,
       canReassign: false,
-      canGenerateUpdationReport: false,
       canSeeRecentUpdations: false,
-      canSeeHelpData: false
+      canSeeCitizenDirectory: false
     });
     alert("New officer successfully created.");
   };
@@ -189,16 +183,13 @@ export function AdminSettings({
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:bg-slate-50 p-1.5 rounded-lg text-xs font-semibold text-slate-700">
                       <input type="checkbox" checked={!!u.canSeeReports} onChange={() => handleToggle(u.id, 'canSeeReports')} className="w-3.5 h-3.5 disabled:opacity-50 text-indigo-600 rounded-sm focus:ring-0"/>
-                      Detailed Reports
+                      Detailed & Updation Reports
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:bg-slate-50 p-1.5 rounded-lg text-xs font-semibold text-slate-700">
                       <input type="checkbox" checked={!!u.canSeeGlobalOverview} onChange={() => handleToggle(u.id, 'canSeeGlobalOverview')} className="w-3.5 h-3.5 disabled:opacity-50 text-indigo-600 rounded-sm focus:ring-0"/>
                       Global Overview Tab
                     </label>
-                    <label className="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:bg-slate-50 p-1.5 rounded-lg text-xs font-semibold text-slate-700">
-                      <input type="checkbox" checked={!!u.canSeeDraftsView} onChange={() => handleToggle(u.id, 'canSeeDraftsView')} className="w-3.5 h-3.5 disabled:opacity-50 text-indigo-600 rounded-sm focus:ring-0"/>
-                      Drafts View / Worker
-                    </label>
+
                     <label className="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:bg-slate-50 p-1.5 rounded-lg text-xs font-semibold text-slate-700">
                       <input type="checkbox" checked={!!u.canEditGlobalOverview} onChange={() => handleToggle(u.id, 'canEditGlobalOverview')} className="w-3.5 h-3.5 disabled:opacity-50 text-indigo-600 rounded-sm focus:ring-0"/>
                       Edit Global Overview
@@ -211,17 +202,14 @@ export function AdminSettings({
                       <input type="checkbox" checked={u.canReassign !== false} onChange={() => handleToggle(u.id, 'canReassign')} className="w-3.5 h-3.5 disabled:opacity-50 text-indigo-600 rounded-sm focus:ring-0"/>
                       Can Re-assign Tasks
                     </label>
-                    <label className="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:bg-slate-50 p-1.5 rounded-lg text-xs font-semibold text-slate-700">
-                      <input type="checkbox" checked={!!u.canGenerateUpdationReport} onChange={() => handleToggle(u.id, 'canGenerateUpdationReport')} className="w-3.5 h-3.5 disabled:opacity-50 text-emerald-600 rounded-sm focus:ring-0"/>
-                      Updation Report Access
-                    </label>
+
                     <label className="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:bg-slate-50 p-1.5 rounded-lg text-xs font-semibold text-slate-700">
                       <input type="checkbox" checked={!!u.canSeeRecentUpdations} onChange={() => handleToggle(u.id, 'canSeeRecentUpdations')} className="w-3.5 h-3.5 disabled:opacity-50 text-emerald-600 rounded-sm focus:ring-0"/>
                       Recent Updations Tab
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:bg-slate-50 p-1.5 rounded-lg text-xs font-semibold text-slate-700">
-                      <input type="checkbox" checked={!!u.canSeeHelpData} onChange={() => handleToggle(u.id, 'canSeeHelpData')} className="w-3.5 h-3.5 disabled:opacity-50 text-indigo-600 rounded-sm focus:ring-0"/>
-                      Read Help Data
+                      <input type="checkbox" checked={!!u.canSeeCitizenDirectory} onChange={() => handleToggle(u.id, 'canSeeCitizenDirectory')} className="w-3.5 h-3.5 disabled:opacity-50 text-indigo-600 rounded-sm focus:ring-0"/>
+                      Citizen Directory & Help Data
                     </label>
                   </div>
                 </div>
@@ -316,7 +304,7 @@ export function AdminSettings({
                   onChange={e => setNewOffForm({...newOffForm, canSeeReports: e.target.checked})} 
                   className="rounded text-indigo-600 bg-white"
                 /> 
-                Detailed Reports
+                Detailed & Updation Reports
               </label>
               <label className="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:bg-slate-50 text-xs font-bold text-indigo-900">
                 <input 
@@ -326,15 +314,6 @@ export function AdminSettings({
                   className="rounded text-indigo-600 bg-white"
                 /> 
                 Global Overview Tab
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:bg-slate-50 text-xs font-bold text-indigo-900">
-                <input 
-                  type="checkbox" 
-                  checked={newOffForm.canSeeDraftsView} 
-                  onChange={e => setNewOffForm({...newOffForm, canSeeDraftsView: e.target.checked})} 
-                  className="rounded text-indigo-600 bg-white"
-                /> 
-                Drafts View / Worker
               </label>
               <label className="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:bg-slate-50 text-xs font-bold text-indigo-900">
                 <input 
@@ -362,17 +341,6 @@ export function AdminSettings({
                   className="rounded text-indigo-600 bg-white"
                 /> 
                 Can Re-assign Tasks
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:bg-slate-50">
-                <input 
-                  type="checkbox" 
-                  checked={newOffForm.canGenerateUpdationReport} 
-                  onChange={e => setNewOffForm({...newOffForm, canGenerateUpdationReport: e.target.checked})} 
-                  className="w-4 h-4 text-emerald-600 rounded"
-                />
-                <span className="text-sm font-semibold text-slate-700">
-                  Updation Report Access
-                </span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:bg-slate-50">
                 <input 

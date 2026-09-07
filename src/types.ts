@@ -10,13 +10,11 @@ export interface User {
   canSeeReports: boolean;
   canSeeGlobal: boolean;
   canSeeGlobalOverview?: boolean;
-  canSeeDraftsView?: boolean;
   canEditGlobalOverview?: boolean;
   canEditOwnInputs?: boolean;
   canReassign?: boolean;
-  canGenerateUpdationReport?: boolean;
   canSeeRecentUpdations?: boolean;
-  canSeeHelpData?: boolean;
+  canSeeCitizenDirectory?: boolean;
   phone: string;
   whatsapp: string;
 }

@@ -57,7 +57,7 @@ export const EXT_LINKS: Record<string, string> = {
 };
 
 export const DEFAULT_USERS: User[] = [
-  { id: 'admin', name: 'Adv. M Liju MLA', role: 'admin', pass: 'Liju@2026', email: 'mlijumlaofficial@gmail.com', enabled: true, canInput: true, canSeeReports: true, canSeeGlobal: true, canSeeGlobalOverview: true, canSeeDraftsView: true, canEditGlobalOverview: true, canEditOwnInputs: true, canReassign: true, canGenerateUpdationReport: true, canSeeRecentUpdations: true, phone: '', whatsapp: '' }
+  { id: 'admin', name: 'Adv. M Liju MLA', role: 'admin', pass: 'Liju@2026', email: 'mlijumlaofficial@gmail.com', enabled: true, canInput: true, canSeeReports: true, canSeeGlobal: true, canSeeGlobalOverview: true, canEditGlobalOverview: true, canEditOwnInputs: true, canReassign: true, canSeeRecentUpdations: true, canSeeCitizenDirectory: true, phone: '', whatsapp: '' }
 ];
 
 export const MORAL_QUOTES = [
