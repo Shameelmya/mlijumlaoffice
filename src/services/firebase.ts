@@ -28,9 +28,9 @@ export const appId = (typeof __app_id !== 'undefined' && __app_id) ||
                      'm-liju-mla-office-system';
 
 export function getColRef(colName: string) {
-  return collection(db, 'artifacts', appId, 'public', 'data', colName);
+  return collection(db, colName);
 }
 
 export function getDocRef(colName: string, docId: string) {
-  return doc(db, 'artifacts', appId, 'public', 'data', colName, docId);
+  return doc(db, colName, docId);
 }
