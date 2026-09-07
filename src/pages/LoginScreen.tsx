@@ -77,8 +77,17 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
         
         {/* Quote Above Container Directly on Background */}
         {dailyQuote && (
-          <div className="w-full max-w-5xl mx-auto mb-6 text-center">
-            <p className="text-base md:text-lg font-medium text-[#1e293b]" style={{ fontFamily: "'Anek Malayalam', sans-serif" }}>
+          <div className="w-full max-w-5xl mx-auto mb-10 text-center px-4">
+            <p 
+              className="text-base md:text-lg text-slate-700 tracking-wide" 
+              style={{ 
+                fontFamily: '"Anek Malayalam", sans-serif',
+                fontOpticalSizing: 'auto',
+                fontWeight: 500,
+                fontStyle: 'normal',
+                fontVariationSettings: '"wdth" 100'
+              }}
+            >
               {dailyQuote}
             </p>
           </div>
