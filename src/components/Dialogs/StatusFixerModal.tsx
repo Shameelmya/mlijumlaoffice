@@ -42,10 +42,6 @@ export function StatusFixerModal({ tasks, updateTask, onClose }: StatusFixerModa
       const updates: Partial<Task> = {};
       if (pendingChanges[taskId].status) {
         updates.status = pendingChanges[taskId].status;
-        if (updates.status === 'Local Work') {
-          updates.assignedTo = [];
-          updates.officerStatuses = {};
-        }
       }
       if (pendingChanges[taskId].freq) updates.followUpFrequency = pendingChanges[taskId].freq;
       if (Object.keys(updates).length > 0) {
@@ -114,9 +110,7 @@ export function StatusFixerModal({ tasks, updateTask, onClose }: StatusFixerModa
                       <option value="Pending">Pending</option>
                       <option value="In Progress">In Progress</option>
                       <option value="Completed">Completed</option>
-                      <option value="D Finished">D Finished</option>
-                      <option value="Draft">Draft</option>
-                      <option value="Local Work">Local Work</option>
+
                       <option value="Rejected">Rejected</option>
                     </select>
                   </td>

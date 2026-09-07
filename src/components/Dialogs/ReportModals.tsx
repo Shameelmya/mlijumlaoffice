@@ -227,7 +227,7 @@ export function UpdationReportConfigModal({ onClose, onGenerate, users }: Updati
               <option value="Pending">Pending</option>
               <option value="In Progress">In Progress</option>
               <option value="Unsolved">Unsolved</option>
-              <option value="Local Work">Local Work</option>
+
               <option value="All">All Statuses</option>
             </select>
           </div>
@@ -288,7 +288,7 @@ export function UpdationReportConfigModal({ onClose, onGenerate, users }: Updati
               </select>
             </div>
           </div>
-          {status !== 'Local Work' && (
+          {true && (
             <div className="flex gap-5 items-center justify-between border-t border-slate-100 pt-4">
               <div className="flex items-center gap-2 mb-2">
                 <input 

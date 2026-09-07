@@ -63,7 +63,7 @@ interface FormState {
   description: string;
   amountWorth: string;
   assignedTo: string[];
-  isLocalWork?: boolean;
+
   newInputType: string;
 }
 
@@ -85,7 +85,7 @@ export function InputFormTab({
   const initForm: FormState = {
     isSelfMode: false,
     isHelpDataMode: false,
-    isLocalWork: false,
+
     types: ['Letter'],
     category: 'General',
     newCategory: '',
@@ -258,9 +258,7 @@ export function InputFormTab({
     if(isInvitation) {
       finalAssignedTo = ['admin'];
     }
-    if (form.isLocalWork) {
-      finalAssignedTo = [];
-    } else if (!form.isHelpDataMode && finalAssignedTo.length === 0) {
+    if (!form.isHelpDataMode && finalAssignedTo.length === 0) {
       return scrollToField('field-assignedTo', 'Please assign this to at least one officer.');
     }
 
@@ -293,7 +291,7 @@ export function InputFormTab({
 
     let finalCatSubmit = form.category;
     let finalTypesSubmit = [...finalTypes];
-    let finalStatus = form.isLocalWork ? 'Local Work' : 'Pending';
+    let finalStatus = 'Pending';
     
     if (form.isHelpDataMode) {
       finalCatSubmit = 'Help Data';
@@ -941,11 +939,7 @@ export function InputFormTab({
                     </span>
                   )}
                 </h3>
-                {form.isLocalWork ? (
-                  <div className="bg-green-50 border border-green-200 p-5 rounded-2xl flex items-center gap-3 text-green-800 font-bold mb-6">
-                    <Plus size={24} className="text-green-600"/> Local Work: No officers assigned.
-                  </div>
-                ) : isInvitation ? (
+                {isInvitation ? (
                   <div className="bg-indigo-50 border border-indigo-200 p-5 rounded-2xl flex items-center gap-3 text-indigo-800 font-bold mb-6">
                     <Plus size={24} className="text-indigo-600"/> Auto-Assigned exclusively to M. Liju (MLA)
                   </div>

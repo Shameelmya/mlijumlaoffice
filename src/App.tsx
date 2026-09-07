@@ -60,6 +60,14 @@ const sanitizeTask = (data: any): Task => {
       mobileNumber: pd.mobileNumber ? String(pd.mobileNumber) : '',
       whatsappNumber: pd.whatsappNumber ? String(pd.whatsappNumber) : '',
       designation: pd.designation ? String(pd.designation) : '',
+      gender: pd.gender ? String(pd.gender) : '',
+      referralPerson: pd.referralPerson ? String(pd.referralPerson) : '',
+      houseName: pd.houseName ? String(pd.houseName) : '',
+      place: pd.place ? String(pd.place) : '',
+      postOffice: pd.postOffice ? String(pd.postOffice) : '',
+      pinCode: pd.pinCode ? String(pd.pinCode) : '',
+      localBody: pd.localBody ? String(pd.localBody) : '',
+      wardNumber: pd.wardNumber ? String(pd.wardNumber) : '',
     },
     createdAt: data?.createdAt ? String(data.createdAt) : new Date().toISOString(),
   } as Task;
@@ -268,7 +276,7 @@ export default function App() {
     };
 
     function unSettings() { unsubSettings(); }
-  }, [fbUser]);
+  }, [fbUser, currentUser]);
 
   const allTasks = useMemo(() => { 
     const taskMap = new Map<string, Task>(); 

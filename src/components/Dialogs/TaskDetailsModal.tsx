@@ -121,9 +121,6 @@ export function TaskDetailsModal({
   const handleSaveEdit = async () => {
     let updatedTimeline = [...task.timeline];
     let finalAssignedTo = [...editData.assignedTo];
-    if (editData.status === 'Local Work') {
-      finalAssignedTo = [];
-    }
 
     const oldAssigned = [...task.assignedTo].sort().join(',');
     const newAssigned = [...finalAssignedTo].sort().join(',');
@@ -143,9 +140,6 @@ export function TaskDetailsModal({
 
     let finalStatus = editData.status;
     let updatedOfficerStatuses = { ...task.officerStatuses };
-    if (finalStatus === 'Local Work') {
-      updatedOfficerStatuses = {};
-    }
 
     if (task.status === 'Rejected') {
       finalStatus = 'Pending';
@@ -489,11 +483,10 @@ export function TaskDetailsModal({
                    <option value="In Progress">In Progress</option>
                    <option value="Draft">Draft</option>
                    <option value="Completed">Completed</option>
-                   <option value="D Finished">D Finished</option>
-                   <option value="Local Work">Local Work</option>
+                   <option value="Rejected">Rejected</option>
                  </select>
                ) : (
-                 <span className={`px-3 py-1 rounded font-bold text-sm uppercase tracking-wider ${task.status==='Completed'?'bg-green-100 text-green-700':task.status==='D Finished'?'bg-emerald-100 text-emerald-700':task.status==='In Progress'?'bg-amber-100 text-amber-700':task.status==='Draft'?'bg-blue-100 text-blue-700':task.status==='Unsolved'?'bg-slate-200 text-slate-500':'bg-red-100 text-red-700'}`}>
+                 <span className={`px-3 py-1 rounded font-bold text-sm uppercase tracking-wider ${task.status==='Completed'?'bg-green-100 text-green-700':task.status==='In Progress'?'bg-amber-100 text-amber-700':task.status==='Draft'?'bg-blue-100 text-blue-700':task.status==='Unsolved'?'bg-slate-200 text-slate-500':'bg-red-100 text-red-700'}`}>
                    {task.status}
                  </span>
                )}

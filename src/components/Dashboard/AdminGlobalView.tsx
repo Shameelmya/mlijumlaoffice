@@ -361,7 +361,7 @@ const AdminTaskCard = React.memo(({
 
   const getStatusColor = (s: string) => {
     if (s === 'Completed') return 'text-green-600';
-    if (s === 'D Finished') return 'text-emerald-600';
+
     if (s === 'In Progress') return 'text-amber-600';
     if (s === 'Draft') return 'text-blue-600';
     return 'text-red-600';
@@ -406,7 +406,7 @@ const AdminTaskCard = React.memo(({
       case 'In Progress': return 'bg-blue-50 border-blue-200';
       case 'Pending': return 'bg-red-50 border-red-200';
       case 'Draft': return 'bg-slate-50 border-slate-200';
-      case 'Local Work': return 'bg-indigo-50 border-indigo-200';
+
       default: return 'bg-white border-slate-200';
     }
   };
@@ -450,12 +450,7 @@ const AdminTaskCard = React.memo(({
                   <span className="hidden lg:flex text-blue-400 group-hover:text-blue-600 group-hover:bg-blue-50 p-1 rounded"><FileEdit size={12}/></span>
                 </button>
               )}
-              {t.status !== 'Local Work' && (
-                <button onClick={(e) => { e.stopPropagation(); triggerConfirm('Confirm Action', 'Change status to Local Work?', () => { const ev = { id: generateUid(), type: 'update' as const, time: getNow(), by: 'M. Liju (Admin)', text: 'Task marked as Local Work directly by Admin.' }; updateTask(t.id, { status: 'Local Work', assignedTo: [], officerStatuses: {}, timeline: [...(t.timeline || []), ev] }); }, false, 'Yes, Change'); }} title="Mark as Local Work" className="group flex items-center justify-center transition-colors">
-                  <span className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-slate-300 text-slate-600 text-[9px] sm:text-[10px] font-bold lg:hidden group-hover:bg-[#F4F7FB]">LW</span>
-                  <span className="hidden lg:flex text-slate-400 group-hover:text-slate-600 group-hover:bg-slate-100 p-1 rounded"><MapPin size={12}/></span>
-                </button>
-              )}
+
               {t.status !== 'Pending' && (
                 <button onClick={(e) => { e.stopPropagation(); triggerConfirm('Confirm Action', 'Change status to Pending?', () => { const newOffStat = {...t.officerStatuses}; (t.assignedTo || []).forEach(id => newOffStat[id] = 'Pending'); const ev = { id: generateUid(), type: 'update' as const, time: getNow(), by: 'M. Liju (Admin)', text: 'Task marked as Pending directly by Admin.' }; updateTask(t.id, { status: 'Pending', officerStatuses: newOffStat, timeline: [...(t.timeline || []), ev] }); }, false, 'Yes, Change'); }} title="Mark as Pending" className="group flex items-center justify-center transition-colors">
                   <span className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-red-300 text-red-600 text-[9px] sm:text-[10px] font-bold lg:hidden group-hover:bg-red-50">PD</span>
