@@ -152,51 +152,49 @@ export function InputFormTab({
   const handlePersChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setForm(prev => {
-      const updated = {
+      let updated = {
         ...prev,
         personal: { ...prev.personal, [name]: value }
       };
-      if (name === 'mobileNumber' && sendWaMsgSame) {
-        updated.personal.whatsappNumber = value;
+      if (name === 'mobileNumber') {
+        if (sendWaMsgSame) {
+          updated.personal.whatsappNumber = value;
+        }
+        
+        if (!prev.isSelfMode) {
+          const clean = value.replace(/\D/g, '');
+          if (clean.length >= 10) {
+            const matchingTasks = [...tasks]
+              .filter(t => t.personalDetails?.mobileNumber?.replace(/\D/g, '') === clean)
+              .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+            
+            if (matchingTasks.length > 0) {
+              const match = matchingTasks[matchingTasks.length - 1];
+              const aggregated = { ...updated.personal };
+              for (const t of matchingTasks) {
+                if (t.personalDetails.name) aggregated.name = t.personalDetails.name;
+                if (t.personalDetails.designation) aggregated.designation = t.personalDetails.designation;
+                if (t.personalDetails.gender) aggregated.gender = t.personalDetails.gender;
+                if (t.personalDetails.houseName) aggregated.houseName = t.personalDetails.houseName;
+                if (t.personalDetails.place) aggregated.place = t.personalDetails.place;
+                if (t.personalDetails.postOffice) aggregated.postOffice = t.personalDetails.postOffice;
+                if (t.personalDetails.pinCode) aggregated.pinCode = t.personalDetails.pinCode;
+                if (t.personalDetails.localBody) aggregated.localBody = t.personalDetails.localBody;
+                if (t.personalDetails.wardNumber) aggregated.wardNumber = t.personalDetails.wardNumber;
+                if (t.personalDetails.whatsappNumber) aggregated.whatsappNumber = t.personalDetails.whatsappNumber;
+              }
+              updated.personal = aggregated;
+              
+              setTimeout(() => {
+                setAutoFilledMessage(`✓ Data loaded from previous visit on ${formatDate(match.createdAt)}`);
+                setTimeout(() => setAutoFilledMessage(''), 5000);
+              }, 0);
+            }
+          }
+        }
       }
       return updated;
     });
-  };
-
-  const handleMobileBlur = () => {
-    if (form.isSelfMode) return;
-    const clean = form.personal.mobileNumber.replace(/\D/g, '');
-    if (clean.length >= 10) {
-      const matchingTasks = [...tasks]
-        .filter(t => t.personalDetails?.mobileNumber?.replace(/\D/g, '') === clean)
-        .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-      
-      if (matchingTasks.length > 0) {
-        const match = matchingTasks[matchingTasks.length - 1];
-        
-        setForm(f => {
-          const aggregated = { ...f.personal };
-          for (const t of matchingTasks) {
-            if (t.personalDetails.name) aggregated.name = t.personalDetails.name;
-            if (t.personalDetails.designation) aggregated.designation = t.personalDetails.designation;
-            if (t.personalDetails.gender) aggregated.gender = t.personalDetails.gender;
-            if (t.personalDetails.houseName) aggregated.houseName = t.personalDetails.houseName;
-            if (t.personalDetails.place) aggregated.place = t.personalDetails.place;
-            if (t.personalDetails.postOffice) aggregated.postOffice = t.personalDetails.postOffice;
-            if (t.personalDetails.pinCode) aggregated.pinCode = t.personalDetails.pinCode;
-            if (t.personalDetails.localBody) aggregated.localBody = t.personalDetails.localBody;
-            if (t.personalDetails.wardNumber) aggregated.wardNumber = t.personalDetails.wardNumber;
-            if (t.personalDetails.whatsappNumber) aggregated.whatsappNumber = t.personalDetails.whatsappNumber;
-          }
-          return {
-            ...f,
-            personal: aggregated
-          };
-        });
-        setAutoFilledMessage(`✓ Data loaded from previous visit on ${formatDate(match.createdAt)}`);
-        setTimeout(() => setAutoFilledMessage(''), 5000);
-      }
-    }
   };
   
   const handleAddCustomCategory = async () => {
@@ -527,9 +525,8 @@ export function InputFormTab({
                   name="mobileNumber" 
                   value={form.personal.mobileNumber} 
                   onChange={handlePersChange} 
-                  onBlur={handleMobileBlur} 
                   className="w-full px-4 py-2.5 bg-[#F4F7FB] border border-slate-200 rounded-2xl text-sm font-semibold focus:bg-white focus:border-blue-500 outline-none transition-all text-slate-800" 
-                  placeholder="Enter to auto-fill..." 
+                  placeholder="Type 10 digits to auto-fill..." 
                 />
               </div>
               <div id="field-name" className="p-2 -m-2">
