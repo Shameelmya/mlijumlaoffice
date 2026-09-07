@@ -47,13 +47,8 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
       onLogin(selectedUser);
     } catch (err: any) {
       console.error(err);
-      if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found') {
-        if (!needsCustomEmail && !customEmail) {
-          setNeedsCustomEmail(true);
-          setError('If you use a custom email address, please enter it below.');
-        } else {
-          setError('Incorrect Email or Password. Please try again.');
-        }
+      if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+        setError('Incorrect Password. Please try again.');
       } else {
         setError('Login Failed: ' + err.message);
       }

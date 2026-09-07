@@ -119,6 +119,7 @@ export function InputFormTab({
   const [showNewInputType, setShowNewInputType] = useState(false);
   const [sendWaMsg, setSendWaMsg] = useState(true);
   const [sendWaMsgSame, setSendWaMsgSame] = useState(false);
+  const [sendPdfLetter, setSendPdfLetter] = useState(true);
   const [lastTask, setLastTask] = useState<Task | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [autoFilledMessage, setAutoFilledMessage] = useState('');
@@ -335,7 +336,10 @@ export function InputFormTab({
     if (!form.isSelfMode && sendWaMsg && (finalPersonalDetails.whatsappNumber || finalPersonalDetails.mobileNumber)) {
       const waNum = formatWhatsAppNumber(finalPersonalDetails.whatsappNumber || finalPersonalDetails.mobileNumber);
       if (waNum) {
-        const waMessage = `പ്രിയപ്പെട്ട ${finalPersonalDetails.name},\n\nതാങ്കൾ എം.എ. റസാഖ് മാസ്റ്റർ എം.എൽ.എ യുടെ ഓഫീസുമായി ബന്ധപ്പെട്ടതിന് നന്ദി. നിങ്ങളുടെ അപേക്ഷ/പരാതി ഔദ്യോഗികമായി രേഖപ്പെടുത്തിയിട്ടുണ്ട്.\n\n*വിഷയം:* ${form.subject}\n*റഫറൻസ് ഐഡി:* ${taskId}\n\n\nസ്നേഹത്തോടെ,\nഎം.എൽ.എ ഓഫീസ്, കുന്ദമംഗലം.ഫോൺ: 9037032002`;
+        if (sendPdfLetter) {
+          triggerDownloadPDF(newTask);
+        }
+        const waMessage = `പ്രിയപ്പെട്ട ${finalPersonalDetails.name},\n\nതാങ്കൾ എം. ലിജു എം.എൽ.എ യുടെ ഓഫീസുമായി ബന്ധപ്പെട്ടതിന് നന്ദി. നിങ്ങളുടെ അപേക്ഷ/പരാതി ഔദ്യോഗികമായി രേഖപ്പെടുത്തിയിട്ടുണ്ട്.\n\n*വിഷയം:* ${form.subject}\n*റഫറൻസ് ഐഡി:* ${taskId}\n\n\nസ്നേഹത്തോടെ,\nഎം.എൽ.എ ഓഫീസ്.`;
         window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(waMessage)}`, '_blank');
       }
     }
@@ -950,17 +954,30 @@ export function InputFormTab({
 
       <div className="p-4 md:p-8 border-t border-slate-200 bg-white flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8">
         {!form.isSelfMode ? (
-          <label className="flex items-center gap-3 cursor-pointer transition-all duration-300 hover:bg-slate-50 bg-green-50 px-5 py-3 rounded-2xl border border-green-200">
-            <input 
-              type="checkbox" 
-              checked={sendWaMsg} 
-              onChange={(e) => setSendWaMsg(e.target.checked)} 
-              className="w-5 h-5 text-green-600 rounded bg-white" 
-            />
-            <span className="font-bold text-green-800 flex items-center gap-2">
-              <Send size={16}/> Auto-Send Malayalam WhatsApp
-            </span>
-          </label>
+          <div className="flex flex-col md:flex-row gap-3">
+            <label className="flex items-center gap-3 cursor-pointer transition-all duration-300 hover:bg-slate-50 bg-green-50 px-5 py-3 rounded-2xl border border-green-200">
+              <input 
+                type="checkbox" 
+                checked={sendWaMsg} 
+                onChange={(e) => setSendWaMsg(e.target.checked)} 
+                className="w-5 h-5 text-green-600 rounded bg-white" 
+              />
+              <span className="font-bold text-green-800 flex items-center gap-2">
+                <Send size={16}/> Auto-Send Malayalam WhatsApp
+              </span>
+            </label>
+            <label className="flex items-center gap-3 cursor-pointer transition-all duration-300 hover:bg-slate-50 bg-blue-50 px-5 py-3 rounded-2xl border border-blue-200">
+              <input 
+                type="checkbox" 
+                checked={sendPdfLetter} 
+                onChange={(e) => setSendPdfLetter(e.target.checked)} 
+                className="w-5 h-5 text-blue-600 rounded bg-white" 
+              />
+              <span className="font-bold text-blue-800 flex items-center gap-2">
+                <Download size={16}/> Send Letter
+              </span>
+            </label>
+          </div>
         ) : (
           <div className="text-sm font-bold text-slate-400 italic">WhatsApp updates disabled in Self Mode.</div>
         )}
