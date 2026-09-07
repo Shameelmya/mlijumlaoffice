@@ -384,9 +384,35 @@ const WorkerTaskCard = React.memo(({
         </div>
       )}
 
-      {!isUnsolved && status !== 'Pending' && (
+      {!isUnsolved && (
         <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-slate-100/50">
-          {/* Receive and Reject buttons have been moved to TaskDetailsModal */}
+          {status === 'Pending' && (
+            <div className="w-full flex gap-2">
+              <button 
+                onClick={() => changeStatus('Received')} 
+                className="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shadow-sm flex items-center justify-center gap-2"
+              >
+                <CheckCircle size={14}/> Receive Task
+              </button>
+              <button 
+                onClick={() => {
+                  triggerConfirm(
+                    "Reject Task", 
+                    "Are you sure you want to reject this task? Please provide a reason.", 
+                    (reason) => {
+                      const evs = [];
+                      evs.push({ id: generateUid(), type: 'rejected', time: getNow(), by: user.name, text: `Rejected: ${reason || 'No reason provided'}` });
+                      changeStatus('Rejected', evs);
+                    }, 
+                    true, "Reject", true, "Reason for rejection..."
+                  );
+                }} 
+                className="flex-1 bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shadow-sm flex items-center justify-center gap-2"
+              >
+                <X size={14}/> Reject
+              </button>
+            </div>
+          )}
           {(status === 'Received' || status === 'In Progress' || status === 'Draft') && (
             <div className="w-full space-y-2">
               <button 

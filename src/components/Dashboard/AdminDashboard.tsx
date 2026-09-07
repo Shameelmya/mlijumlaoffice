@@ -32,6 +32,7 @@ interface AdminDashboardProps {
   setImpersonatedUser: (user: User | null) => void;
   triggerPrint: (task: Task) => void;
   triggerDownloadPDF: (task: Task) => void;
+  triggerDownloadPNG: (task: Task) => void;
   triggerDetailsPrint: (task: Task) => void;
   triggerDetailsDownload: (task: Task) => void;
   triggerViewDetails: (task: Task) => void;
@@ -100,6 +101,7 @@ export function AdminDashboard({
   setImpersonatedUser,
   triggerPrint,
   triggerDownloadPDF,
+  triggerDownloadPNG,
   triggerDetailsPrint,
   triggerDetailsDownload,
   triggerViewDetails,
@@ -144,7 +146,7 @@ export function AdminDashboard({
 
   const analyticsTasks = useFilteredTasks(tasks, globalFilters, '', null, null);
   
-  const baseTasks = useMemo(() => tasks.filter(t => !t.isTrashed && t.taskType !== 'direct'), [tasks]);
+  const baseTasks = useMemo(() => tasks.filter(t => !t.isTrashed && t.taskType !== 'direct' && !t.isHelpData), [tasks]);
 
   const total = baseTasks.length;
   const comp = baseTasks.filter(t => t.status === 'Completed').length;
@@ -350,6 +352,7 @@ export function AdminDashboard({
           users={users} 
           triggerPrint={triggerPrint} 
           triggerDownloadPDF={triggerDownloadPDF} 
+          triggerDownloadPNG={triggerDownloadPNG}
           creator={currentUser} 
         />
       )}

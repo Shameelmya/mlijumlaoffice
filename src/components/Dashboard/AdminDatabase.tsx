@@ -1,10 +1,10 @@
 import { useState, ChangeEvent } from 'react';
 import { Download, Upload, AlertOctagon, Trash2, AlertTriangle, List } from 'lucide-react';
-import { deleteDoc, setDoc } from 'firebase/firestore';
+import { deleteDoc, setDoc, writeBatch, getDocs } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 import { Task, User, BackupMeta } from '../../types';
-import { getDocRef, firebaseConfig } from '../../services/firebase';
+import { getDocRef, firebaseConfig, db, getColRef } from '../../services/firebase';
 import { formatDate, getNow } from '../../utils/formatters';
 import { ShieldAlert } from 'lucide-react';
 
@@ -80,15 +80,26 @@ export function AdminDatabase({
           `Are you sure you want to restore ${data.length} records into your database? Note that files with existing matching IDs will be rewritten.`, 
           async () => {
             let count = 0;
+            let currentBatch = writeBatch(db);
+            let batchCount = 0;
             for (const task of data) {
               if (task.id) {
                 const targetCol = (task.status === 'Completed' || task.status === 'Unsolved') ? 'archived_tasks' : 'tasks';
-                await setDoc(getDocRef(targetCol, task.id), task);
-                count++; 
+                currentBatch.set(getDocRef(targetCol, task.id), task);
+                count++;
+                batchCount++;
+                if (batchCount === 450) {
+                  await currentBatch.commit();
+                  currentBatch = writeBatch(db);
+                  batchCount = 0;
+                }
               }
             }
+            if (batchCount > 0) {
+              await currentBatch.commit();
+            }
             await updateBackupMeta({ lastImport: getNow(), lastImportCount: count });
-            alert(`Successfully imported and updated ${count} records!`);
+            alert(`Successfully imported and updated ${count} records at lightning speed!`);
           }, 
           false, 
           "Import Data"
@@ -113,20 +124,84 @@ export function AdminDatabase({
       "PERMANENT DATABASE ERASE WARNING", 
       `You are performing a highly critical action. Erasing ${targetName} data is permanent. Are you absolutely certain you want to proceed?`, 
       async () => {
-        const tasksToDelete = resetTarget === 'all' 
-          ? tasks 
-          : tasks.filter(t => t.assignedTo.includes(resetTarget));
-        let count = 0;
-        for (const t of tasksToDelete) {
-          const targetCol = (t.status === 'Completed' || t.status === 'Unsolved') ? 'archived_tasks' : 'tasks';
-          await deleteDoc(getDocRef(targetCol, t.id));
-          count++;
+        if (resetTarget === 'factory') {
+          try {
+            alert("Starting Factory Reset... Please do not close the window.");
+            const collectionsToClear = ['tasks', 'archived_tasks', 'users'];
+            
+            for (const colName of collectionsToClear) {
+              const snap = await getDocs(getColRef(colName));
+              let currentBatch = writeBatch(db);
+              let batchCount = 0;
+              let deletedCount = 0;
+              
+              for (const docSnap of snap.docs) {
+                // If it's the users collection, DO NOT delete the admin user
+                if (colName === 'users') {
+                  const uData = docSnap.data();
+                  if (uData.role === 'admin' || uData.id === 'admin') {
+                    continue;
+                  }
+                }
+                
+                currentBatch.delete(docSnap.ref);
+                batchCount++;
+                deletedCount++;
+                
+                if (batchCount === 450) {
+                  await currentBatch.commit();
+                  currentBatch = writeBatch(db);
+                  batchCount = 0;
+                }
+              }
+              if (batchCount > 0) {
+                await currentBatch.commit();
+              }
+              console.log(`Cleared ${deletedCount} records from ${colName}`);
+            }
+            
+            // Reset meta/login_roster to keep only admin
+            const adminUser = users.find(u => u.role === 'admin' || u.id === 'admin');
+            if (adminUser) {
+              await setDoc(getDocRef('meta', 'login_roster'), {
+                [adminUser.id]: { id: adminUser.id, name: adminUser.name, enabled: adminUser.enabled }
+              });
+            }
+            
+            setResetText('');
+            alert("Factory Reset Complete! The database is now empty except for the Super Admin.");
+            window.location.reload(); // Reload to clear local state
+          } catch (e: any) {
+            console.error(e);
+            alert("Error during factory reset: " + e.message);
+          }
+        } else {
+          const tasksToDelete = resetTarget === 'all' 
+            ? tasks 
+            : tasks.filter(t => t.assignedTo.includes(resetTarget));
+          let count = 0;
+          let currentBatch = writeBatch(db);
+          let batchCount = 0;
+          for (const t of tasksToDelete) {
+            const targetCol = (t.status === 'Completed' || t.status === 'Unsolved') ? 'archived_tasks' : 'tasks';
+            currentBatch.delete(getDocRef(targetCol, t.id));
+            count++;
+            batchCount++;
+            if (batchCount === 450) {
+              await currentBatch.commit();
+              currentBatch = writeBatch(db);
+              batchCount = 0;
+            }
+          }
+          if (batchCount > 0) {
+            await currentBatch.commit();
+          }
+          setResetText('');
+          alert(`Successfully cleared ${count} records from database.`);
         }
-        setResetText('');
-        alert(`Successfully cleared ${count} records from database.`);
       }, 
       true, 
-      "Permanently Erase"
+      resetTarget === 'factory' ? "Execute Factory Reset" : "Permanently Erase"
     );
   };
 
@@ -371,11 +446,12 @@ export function AdminDatabase({
             onChange={e => setResetTarget(e.target.value)} 
             className="w-full px-4 py-3 bg-white border border-red-200 rounded-2xl font-bold text-red-900 outline-none focus:ring-2 focus:ring-red-500 mb-6 text-red-800"
           >
-            <option value="all">Entire Database (All Officers & Admin)</option>
+            <option value="factory">⚠️ COMPLETE FACTORY RESET (Delete EVERYTHING except Admin)</option>
+            <option value="all">Entire Database (All Tasks & Archives)</option>
             {users.map(u => <option key={u.id} value={u.id}>Only {u.name}'s Data</option>)}
           </select>
           <label className="text-[10px] font-bold text-red-500 uppercase tracking-widest block mb-2">
-            Type <span className="font-mono bg-red-200 px-1 text-red-800">{resetTarget === 'all' ? 'Delete Data All' : `Delete Data of ${users.find(u => u.id === resetTarget)?.name || resetTarget}`}</span> to confirm:
+            Type <span className="font-mono bg-red-200 px-1 text-red-800">{resetTarget === 'factory' ? 'Delete Data All' : resetTarget === 'all' ? 'Delete Data All' : `Delete Data of ${users.find(u => u.id === resetTarget)?.name || resetTarget}`}</span> to confirm:
           </label>
           <input 
             type="text" 

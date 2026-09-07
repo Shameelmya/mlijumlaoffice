@@ -118,19 +118,7 @@ export function AdminGlobalView({
     return [...categories].sort((a, b) => String(a).localeCompare(String(b)));
   }, [categories]);
 
-  const handleSendWA = (t: Task) => {
-    if (t.isSelfMode) return;
-    const num = t.personalDetails?.whatsappNumber || t.personalDetails?.mobileNumber;
-    const waNum = formatWhatsAppNumber(num);
-    if (!waNum) {
-      alert('No valid mobile number found for this citizen.');
-      return;
-    }
-    const waMessage = `പ്രിയപ്പെട്ട ${t.personalDetails.name},\n\nതാങ്കൾ എം.എ. റസാഖ് മാസ്റ്റർ എം.എൽ.എ യുടെ ഓഫീസുമായി ബന്ധപ്പെട്ടതിന് നന്ദി. നിങ്ങളുടെ അപേക്ഷ/പരാതി ഔദ്യോഗികമായി രേഖപ്പെടുത്തിയിട്ടുണ്ട്.\n\n*വിഷയം:* ${t.subject}\n*റഫറൻസ് ഐഡി:* ${t.id}\n\n\nസ്നേഹത്തോടെ,\nഎം.എൽ.എ ഓഫീസ്, കുന്ദമംഗലം.ഫോൺ: 9037032002`;
-    const ev = { id: generateUid(), type: 'update' as const, time: getNow(), by: 'System', text: 'Auto-Acknowledgment sent via WhatsApp.' };
-    updateTask(t.id, { isWASent: true, timeline: [...(t.timeline || []), ev] });
-    window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(waMessage)}`, '_blank');
-  };
+
 
   return (
     <div className="space-y-6">
@@ -394,6 +382,20 @@ const AdminTaskCard = React.memo(({
       clearTimeout(pressTimer.current);
       pressTimer.current = null;
     }
+  };
+
+  const handleSendWA = (t: Task) => {
+    if (t.isSelfMode) return;
+    const num = t.personalDetails?.whatsappNumber || t.personalDetails?.mobileNumber;
+    const waNum = formatWhatsAppNumber(num);
+    if (!waNum) {
+      alert('No valid mobile number found for this citizen.');
+      return;
+    }
+    const waMessage = `പ്രിയപ്പെട്ട ${t.personalDetails.name},\n\nതാങ്കൾ എം.എ. റസാഖ് മാസ്റ്റർ എം.എൽ.എ യുടെ ഓഫീസുമായി ബന്ധപ്പെട്ടതിന് നന്ദി. നിങ്ങളുടെ അപേക്ഷ/പരാതി ഔദ്യോഗികമായി രേഖപ്പെടുത്തിയിട്ടുണ്ട്.\n\n*വിഷയം:* ${t.subject}\n*റഫറൻസ് ഐഡി:* ${t.id}\n\n\nസ്നേഹത്തോടെ,\nഎം.എൽ.എ ഓഫീസ്, കുന്ദമംഗലം.ഫോൺ: 9037032002`;
+    const ev = { id: generateUid(), type: 'update' as const, time: getNow(), by: 'System', text: 'Auto-Acknowledgment sent via WhatsApp.' };
+    updateTask(t.id, { isWASent: true, timeline: [...(t.timeline || []), ev] });
+    window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(waMessage)}`, '_blank');
   };
 
   const cardBg = t.isSelfMode 

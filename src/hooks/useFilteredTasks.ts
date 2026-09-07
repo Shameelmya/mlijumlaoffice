@@ -9,7 +9,7 @@ export const useFilteredTasks = (
   officerFilter: string | null = null
 ): Task[] => {
   return useMemo(() => {
-    let result = allTasks;
+    let result = allTasks.filter(t => !t.isHelpData);
     
     if (searchStr) {
       const exactMatch = result.find(t => t.id.toLowerCase() === searchStr.trim().toLowerCase());

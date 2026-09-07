@@ -1,7 +1,8 @@
 import React, { useState, FormEvent, createRef } from 'react';
 import { 
   Plus, Filter, FileText, User, ExternalLink, CalendarPlus, Users, 
-  Clock, Send, Check, CheckCircle, Printer, Download, MessageSquare, X 
+  Clock, Send, Check, CheckCircle, Printer, Download, MessageSquare, X,
+  HeartHandshake, Phone
 } from 'lucide-react';
 import { Task, User as UserType, GlobalFilters, Attachment } from '../../types';
 import { SearchableCategorySelect } from '../Forms/SearchableCategorySelect';
@@ -27,11 +28,13 @@ interface InputFormTabProps {
   users: UserType[];
   triggerPrint: (task: Task) => void;
   triggerDownloadPDF: (task: Task) => void;
+  triggerDownloadPNG: (task: Task) => void;
   creator: UserType;
 }
 
 interface FormState {
   isSelfMode: boolean;
+  isHelpDataMode: boolean;
   types: string[];
   category: string;
   newCategory: string;
@@ -58,6 +61,7 @@ interface FormState {
     otherGender: string;
   };
   description: string;
+  amountWorth: string;
   assignedTo: string[];
   isLocalWork?: boolean;
   newInputType: string;
@@ -75,13 +79,15 @@ export function InputFormTab({
   users,
   triggerPrint,
   triggerDownloadPDF,
+  triggerDownloadPNG,
   creator
 }: InputFormTabProps) {
   const initForm: FormState = {
     isSelfMode: false,
+    isHelpDataMode: false,
     isLocalWork: false,
     types: ['Letter'],
-    category: '',
+    category: 'General',
     newCategory: '',
     programDate: '',
     subject: '',
@@ -106,6 +112,7 @@ export function InputFormTab({
       otherGender: ''
     },
     description: '',
+    amountWorth: '',
     assignedTo: [],
     newInputType: ''
   };
@@ -223,17 +230,19 @@ export function InputFormTab({
       }
       finalCat = form.newCategory;
     }
-    if (!finalCat) {
-      return scrollToField('field-category', 'Please select a Category.');
-    }
-
-    if (!form.isSelfMode) {
+    
+    if (!form.isHelpDataMode && !form.isSelfMode) {
       if (!form.personal.mobileNumber) return scrollToField('field-mobileNumber', 'Mobile Number is mandatory.');
       if (!form.personal.name) return scrollToField('field-name', 'Full Name is mandatory.');
     }
-
-    if (!form.subject.trim()) {
-      return scrollToField('field-subject', 'Subject is mandatory.');
+    
+    if (form.isHelpDataMode) {
+      if (!form.personal.name) return scrollToField('field-name', 'Name is mandatory.');
+      if (!form.description) return scrollToField('field-description', 'Help Given Description is mandatory.');
+    } else {
+      if (!form.subject.trim()) {
+        return scrollToField('field-subject', 'Subject is mandatory.');
+      }
     }
 
     if (form.attachments.length === 0 && !addLinkLater) {
@@ -251,7 +260,7 @@ export function InputFormTab({
     }
     if (form.isLocalWork) {
       finalAssignedTo = [];
-    } else if (finalAssignedTo.length === 0) {
+    } else if (!form.isHelpDataMode && finalAssignedTo.length === 0) {
       return scrollToField('field-assignedTo', 'Please assign this to at least one officer.');
     }
 
@@ -282,6 +291,16 @@ export function InputFormTab({
       finalPersonalDetails.mobileNumber = 'N/A';
     }
 
+    let finalCatSubmit = form.category;
+    let finalTypesSubmit = [...finalTypes];
+    let finalStatus = form.isLocalWork ? 'Local Work' : 'Pending';
+    
+    if (form.isHelpDataMode) {
+      finalCatSubmit = 'Help Data';
+      finalTypesSubmit = ['Help'];
+      finalStatus = 'Help Data';
+    }
+
     const defaultDeadline = getNextDayISO();
     const finalDeadline = form.customDeadline ? new Date(form.customDeadline).toISOString() : defaultDeadline;
     const deadlineMsg = form.customDeadline 
@@ -301,17 +320,19 @@ export function InputFormTab({
 
     const newTask: Task = {
       id: taskId,
-      types: finalTypes,
-      category: finalCat,
+      types: finalTypesSubmit,
+      category: finalCatSubmit,
       personalDetails: { ...finalPersonalDetails, gender: finalGender },
       taskType: 'input',
       isSelfMode: form.isSelfMode,
-      subject: form.subject,
+      isHelpData: form.isHelpDataMode,
+      subject: form.isHelpDataMode ? form.description.substring(0, 50) + (form.description.length > 50 ? '...' : '') : form.subject,
       description: form.description,
+      amountWorth: form.amountWorth,
       assignedTo: finalAssignedTo,
       deadline: finalDeadline,
-      programDate: isInvitation ? form.programDate : null,
-      status: form.isLocalWork ? 'Local Work' : 'Pending',
+      programDate: isInvitation && !form.isHelpDataMode ? form.programDate : null,
+      status: finalStatus,
       priority: 'Medium',
       officerStatuses: {},
       isSignedByMLA: false,
@@ -333,11 +354,11 @@ export function InputFormTab({
     setIsSubmitting(false);
     setLastTask(newTask);
 
-    if (!form.isSelfMode && sendWaMsg && (finalPersonalDetails.whatsappNumber || finalPersonalDetails.mobileNumber)) {
+    if (!form.isSelfMode && !form.isHelpDataMode && sendWaMsg && (finalPersonalDetails.whatsappNumber || finalPersonalDetails.mobileNumber)) {
       const waNum = formatWhatsAppNumber(finalPersonalDetails.whatsappNumber || finalPersonalDetails.mobileNumber);
       if (waNum) {
         if (sendPdfLetter) {
-          triggerDownloadPDF(newTask);
+          triggerDownloadPNG(newTask);
         }
         const waMessage = `പ്രിയപ്പെട്ട ${finalPersonalDetails.name},\n\nതാങ്കൾ എം. ലിജു എം.എൽ.എ യുടെ ഓഫീസുമായി ബന്ധപ്പെട്ടതിന് നന്ദി. നിങ്ങളുടെ അപേക്ഷ/പരാതി ഔദ്യോഗികമായി രേഖപ്പെടുത്തിയിട്ടുണ്ട്.\n\n*വിഷയം:* ${form.subject}\n*റഫറൻസ് ഐഡി:* ${taskId}\n\n\nസ്നേഹത്തോടെ,\nഎം.എൽ.എ ഓഫീസ്.`;
         window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(waMessage)}`, '_blank');
@@ -385,162 +406,175 @@ export function InputFormTab({
       className={`bg-white rounded-[20px] shadow-sm border overflow-hidden ${form.isSelfMode ? 'border-yellow-300' : 'border-slate-200'}`}
     >
       <div className="bg-white/90 backdrop-blur-xl px-4 sm:px-10 py-3 sm:py-4 flex flex-col sm:flex-row justify-center sm:justify-between items-center text-slate-800 border-b border-slate-200 shadow-sm gap-2 sm:gap-0">
-        <h2 className="hidden sm:flex font-bold text-lg items-center gap-2"><Plus size={20}/> New Registration</h2>
-        <div className="flex gap-2 w-full sm:w-auto justify-center">
-          <label className="flex items-center justify-center gap-1.5 cursor-pointer bg-blue-600 hover:bg-blue-700 text-white shadow-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-[14px] sm:rounded-2xl border border-slate-600 transition-colors w-full sm:w-auto">
+        <h2 className="text-xl sm:text-2xl font-bold tracking-tight">Register New Input</h2>
+        <div className="flex items-center gap-4">
+          <label className="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:bg-yellow-100 bg-yellow-50 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-yellow-200">
             <input 
               type="checkbox" 
               checked={form.isSelfMode} 
-              onChange={(e) => setForm(f => ({ ...f, isSelfMode: e.target.checked }))} 
+              onChange={(e) => setForm(f => ({ ...f, isSelfMode: e.target.checked, isHelpDataMode: false }))} 
               className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-500 rounded focus:ring-yellow-500 bg-slate-900" 
             />
-            <span className="font-bold text-xs sm:text-sm text-white">Self App Mode (No Citizen)</span>
+            <span className="font-bold text-yellow-800 flex items-center gap-1.5 text-xs sm:text-sm">
+              <User size={14}/> Self Application
+            </span>
+          </label>
+          
+          <label className="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:bg-emerald-100 bg-emerald-50 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-emerald-200">
+            <input 
+              type="checkbox" 
+              checked={form.isHelpDataMode} 
+              onChange={(e) => setForm(f => ({ ...f, isHelpDataMode: e.target.checked, isSelfMode: false }))} 
+              className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-500 rounded focus:ring-emerald-500 bg-white" 
+            />
+            <span className="font-bold text-emerald-800 flex items-center gap-1.5 text-xs sm:text-sm">
+              <HeartHandshake size={14}/> Help Data
+            </span>
           </label>
         </div>
       </div>
 
-      <div className={`p-4 md:p-8 border-b border-slate-100 bg-[#F4F7FB]/50 grid ${form.isSelfMode ? 'grid-cols-1 max-w-3xl' : 'md:grid-cols-2'} gap-6 md:gap-10`}>
-        {!form.isSelfMode && (
-          <div id="field-types" className="p-2 -m-2">
+      {!form.isHelpDataMode && (
+        <div className={`p-4 md:p-8 border-b border-slate-100 bg-[#F4F7FB]/50 grid ${form.isSelfMode ? 'grid-cols-1 max-w-3xl' : 'md:grid-cols-2'} gap-6 md:gap-10`}>
+          {!form.isSelfMode && (
+            <div id="field-types" className="p-2 -m-2">
+              <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2 text-lg">
+                <Filter className="text-blue-600"/> Input Type * 
+                {formError.field === 'field-types' && (
+                  <span className="text-red-500 text-xs animate-pulse bg-red-100 px-2 py-1 rounded ml-auto">
+                    {formError.msg}
+                  </span>
+                )}
+              </h3>
+              {!showNewInputType ? (
+                <SearchableSelect 
+                  options={inputTypes}
+                  value={form.types[0] || ''}
+                  onChange={(val) => setForm(f => ({ ...f, types: [val] }))}
+                  placeholder="Select Input Type..."
+                  onAddNewClick={() => setShowNewInputType(true)}
+                />
+              ) : (
+                <div className="flex gap-2">
+                  <input 
+                    type="text" 
+                    name="newInputType" 
+                    placeholder="Enter Custom Input Type" 
+                    value={form.newInputType} 
+                    onChange={(e) => setForm(f => ({ ...f, newInputType: e.target.value }))} 
+                    className="w-full px-4 py-2.5 bg-[#F4F7FB] border border-slate-200 rounded-2xl text-sm font-semibold focus:bg-white focus:border-blue-500 outline-none text-slate-800" 
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      if (form.newInputType.trim()) {
+                        addInputType(form.newInputType.trim());
+                        setForm(f => ({ ...f, types: [form.newInputType.trim()] }));
+                      }
+                      setShowNewInputType(false);
+                      setForm(f => ({ ...f, newInputType: '' }));
+                    }} 
+                    className="px-3 bg-blue-50 text-blue-600 rounded-2xl hover:bg-blue-100 transition-colors flex items-center justify-center"
+                  >
+                    <Plus size={16}/>
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      setShowNewInputType(false);
+                      setForm(f => ({ ...f, newInputType: '' }));
+                    }} 
+                    className="px-3 bg-red-50 text-red-600 rounded-2xl hover:bg-red-100 transition-colors flex items-center justify-center"
+                  >
+                    <X size={16}/>
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+          <div id="field-category" className="p-2 -m-2">
             <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2 text-lg">
-              <Filter className="text-blue-600"/> Input Type * 
-              {formError.field === 'field-types' && (
+              <FileText className="text-blue-600"/> Category * 
+              {formError.field === 'field-category' && (
                 <span className="text-red-500 text-xs animate-pulse bg-red-100 px-2 py-1 rounded ml-auto">
                   {formError.msg}
                 </span>
               )}
             </h3>
-            {!showNewInputType ? (
-              <SearchableSelect 
-                options={inputTypes}
-                value={form.types[0] || ''}
-                onChange={(val) => setForm(f => ({ ...f, types: [val] }))}
-                placeholder="Select Input Type..."
-                onAddNewClick={() => setShowNewInputType(true)}
+            {!showNewCat ? (
+              <SearchableCategorySelect 
+                categories={categories} 
+                selected={form.category} 
+                onChange={(value) => setForm(f => ({ ...f, category: value }))} 
+                onAddNewClick={() => setShowNewCat(true)} 
               />
             ) : (
-              <div className="flex gap-2">
+              <div className="flex flex-col gap-2">
                 <input 
                   type="text" 
-                  name="newInputType" 
-                  placeholder="Enter Custom Input Type" 
-                  value={form.newInputType} 
-                  onChange={(e) => setForm(f => ({ ...f, newInputType: e.target.value }))} 
-                  className="w-full px-4 py-2.5 bg-[#F4F7FB] border border-slate-200 rounded-2xl text-sm font-semibold focus:bg-white focus:border-blue-500 outline-none text-slate-800" 
+                  autoFocus 
+                  placeholder="Type new category name..." 
+                  value={form.newCategory} 
+                  onChange={(e) => setForm(f => ({ ...f, newCategory: e.target.value }))} 
+                  className="w-full px-4 py-3 border border-slate-300 rounded-2xl font-bold outline-none focus:border-blue-500 bg-white" 
                 />
-                <button 
-                  type="button" 
-                  onClick={() => {
-                    if (form.newInputType.trim()) {
-                      addInputType(form.newInputType.trim());
-                      setForm(f => ({ ...f, types: [form.newInputType.trim()] }));
-                    }
-                    setShowNewInputType(false);
-                    setForm(f => ({ ...f, newInputType: '' }));
-                  }} 
-                  className="px-3 bg-blue-50 text-blue-600 rounded-2xl hover:bg-blue-100 transition-colors flex items-center justify-center"
-                >
-                  <Plus size={16}/>
-                </button>
-                <button 
-                  type="button" 
-                  onClick={() => {
-                    setShowNewInputType(false);
-                    setForm(f => ({ ...f, newInputType: '' }));
-                  }} 
-                  className="px-3 bg-red-50 text-red-600 rounded-2xl hover:bg-red-100 transition-colors flex items-center justify-center"
-                >
-                  <X size={16}/>
-                </button>
+                <div className="flex gap-2">
+                  <button 
+                    type="button" 
+                    onClick={handleAddCustomCategory} 
+                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 hover:-translate-y-0.5 transition-all duration-300"
+                  >
+                    Save & Select
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={() => setShowNewCat(false)} 
+                    className="px-4 py-2 bg-slate-100 text-slate-600 rounded-2xl font-bold hover:bg-slate-200"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             )}
           </div>
-        )}
-        <div id="field-category" className="p-2 -m-2">
-          <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2 text-lg">
-            <FileText className="text-blue-600"/> Category * 
-            {formError.field === 'field-category' && (
-              <span className="text-red-500 text-xs animate-pulse bg-red-100 px-2 py-1 rounded ml-auto">
-                {formError.msg}
-              </span>
-            )}
-          </h3>
-          {!showNewCat ? (
-            <SearchableCategorySelect 
-              categories={categories} 
-              selected={form.category} 
-              onChange={(value) => setForm(f => ({ ...f, category: value }))} 
-              onAddNewClick={() => setShowNewCat(true)} 
-            />
-          ) : (
-            <div className="flex flex-col gap-2">
-              <input 
-                type="text" 
-                autoFocus 
-                placeholder="Type new category name..." 
-                value={form.newCategory} 
-                onChange={(e) => setForm(f => ({ ...f, newCategory: e.target.value }))} 
-                className="w-full px-4 py-3 border border-slate-300 rounded-2xl font-bold outline-none focus:border-blue-500 bg-white" 
-              />
-              <div className="flex gap-2">
-                <button 
-                  type="button" 
-                  onClick={handleAddCustomCategory} 
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 hover:-translate-y-0.5 transition-all duration-300"
-                >
-                  Save & Select
-                </button>
-                <button 
-                  type="button" 
-                  onClick={() => setShowNewCat(false)} 
-                  className="px-4 py-2 bg-slate-100 text-slate-600 rounded-2xl font-bold hover:bg-slate-200"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          )}
         </div>
-      </div>
+      )}
 
-      <div className={`p-4 md:p-8 border-b border-slate-100 relative ${form.isSelfMode ? 'bg-yellow-50/50' : 'bg-white'}`}>
+      <div className={`p-4 md:p-8 border-b border-slate-100 relative ${form.isHelpDataMode ? 'bg-emerald-50/30' : (form.isSelfMode ? 'bg-yellow-50/50' : 'bg-white')}`}>
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-bold text-slate-800 flex items-center gap-2 text-lg">
-            <User className="text-blue-600"/> {form.isSelfMode ? 'Application Details' : 'Citizen Details'}
+            <User className="text-blue-600"/> {form.isHelpDataMode ? 'Help Recipient Details' : (form.isSelfMode ? 'Application Details' : 'Citizen Details')}
           </h3>
           {autoFilledMessage && (
-            <span className="text-xs font-bold bg-green-100 text-green-700 px-3 py-1 rounded-full animate-in fade-in">
-              {autoFilledMessage}
-            </span>
+            <div className="animate-in fade-in slide-in-from-right-4 bg-green-100 text-green-800 text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm border border-green-200">
+              <CheckCircle size={14}/> {autoFilledMessage}
+            </div>
           )}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {!form.isSelfMode && (
             <>
               <div id="field-mobileNumber" className="p-2 -m-2">
-                <label className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">
-                  <span>Mobile Number *</span>
-                  {formError.field === 'field-mobileNumber' && (
-                    <span className="text-red-500 normal-case tracking-normal font-bold animate-pulse">{formError.msg}</span>
-                  )}
-                </label>
-                <input 
-                  type="number"
-                  required 
-                  name="mobileNumber" 
-                  value={form.personal.mobileNumber} 
-                  onChange={handlePersChange} 
-                  className="w-full px-4 py-2.5 bg-[#F4F7FB] border border-slate-200 rounded-2xl text-sm font-semibold focus:bg-white focus:border-blue-500 outline-none transition-all text-slate-800" 
-                  placeholder="Type 10 digits to auto-fill..." 
-                />
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Mobile Number *</label>
+                <div className="flex gap-2">
+                  <div className="flex-1 relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Phone size={14} className="text-slate-400"/>
+                    </div>
+                    <input 
+                      type="number"
+                      required 
+                      name="mobileNumber" 
+                      value={form.personal.mobileNumber} 
+                      onChange={handlePersChange} 
+                      placeholder="10 digit number"
+                      className="w-full pl-9 pr-4 py-2.5 bg-[#F4F7FB] border border-slate-200 rounded-2xl text-sm font-semibold focus:bg-white focus:border-blue-500 outline-none transition-all text-slate-800 placeholder-slate-400" 
+                    />
+                  </div>
+                </div>
               </div>
               <div id="field-name" className="p-2 -m-2">
-                <label className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">
-                  <span>Full Name *</span>
-                  {formError.field === 'field-name' && (
-                    <span className="text-red-500 normal-case tracking-normal font-bold animate-pulse">{formError.msg}</span>
-                  )}
-                </label>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Full Name *</label>
                 <input 
                   required 
                   name="name" 
@@ -626,7 +660,7 @@ export function InputFormTab({
               </div>
             </>
           )}
-          {!form.isSelfMode && (
+          {!form.isSelfMode && !form.isHelpDataMode && (
             <div>
               <label className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">
                 <span>Designation</span>
@@ -663,17 +697,19 @@ export function InputFormTab({
               )}
             </div>
           )}
-          <div>
-            <label className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">
-              <span>Referral Person (Optional)</span>
-            </label>
-            <input 
-              name="referralPerson" 
-              value={form.personal.referralPerson} 
-              onChange={handlePersChange} 
-              className="w-full px-4 py-2.5 bg-[#F4F7FB] border border-slate-200 rounded-2xl text-sm font-semibold focus:bg-white focus:border-blue-500 outline-none transition-all text-slate-800" 
-            />
-          </div>
+          {!form.isHelpDataMode && (
+            <div>
+              <label className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">
+                <span>Referral Person (Optional)</span>
+              </label>
+              <input 
+                name="referralPerson" 
+                value={form.personal.referralPerson} 
+                onChange={handlePersChange} 
+                className="w-full px-4 py-2.5 bg-[#F4F7FB] border border-slate-200 rounded-2xl text-sm font-semibold focus:bg-white focus:border-blue-500 outline-none transition-all text-slate-800" 
+              />
+            </div>
+          )}
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Place Name</label>
             <input 
@@ -683,76 +719,80 @@ export function InputFormTab({
               className="w-full px-4 py-2.5 bg-[#F4F7FB] border border-slate-200 rounded-2xl text-sm font-semibold focus:bg-white focus:border-blue-500 outline-none transition-all text-slate-800" 
             />
           </div>
-          <div>
-            <label className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">
-              <span>Local Body</span>
-            </label>
-            {!showNewLocalBody ? (
-              <SearchableSelect 
-                options={WARD_LOCAL_BODIES}
-                value={form.personal.localBody}
-                onChange={(val) => setForm(f => ({ ...f, personal: { ...f.personal, localBody: val } }))}
-                placeholder="Select Local Body..."
-                onAddNewClick={() => setShowNewLocalBody(true)}
-              />
-            ) : (
-              <div className="flex gap-2">
-                <input 
-                  type="text" 
-                  name="otherLocalBody" 
-                  placeholder="Enter Custom Local Body" 
-                  value={form.personal.otherLocalBody} 
-                  onChange={handlePersChange} 
-                  className="w-full px-4 py-2.5 bg-[#F4F7FB] border border-slate-200 rounded-2xl text-sm font-semibold focus:bg-white focus:border-blue-500 outline-none text-slate-800" 
-                />
-                <button 
-                  type="button" 
-                  onClick={() => {
-                    setShowNewLocalBody(false);
-                    setForm(f => ({ ...f, personal: { ...f.personal, otherLocalBody: '' } }));
-                  }} 
-                  className="px-3 bg-red-50 text-red-600 rounded-2xl hover:bg-red-100 transition-colors"
-                >
-                  <X size={16}/>
-                </button>
+          {!form.isHelpDataMode && (
+            <>
+              <div>
+                <label className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">
+                  <span>Local Body</span>
+                </label>
+                {!showNewLocalBody ? (
+                  <SearchableSelect 
+                    options={WARD_LOCAL_BODIES}
+                    value={form.personal.localBody}
+                    onChange={(val) => setForm(f => ({ ...f, personal: { ...f.personal, localBody: val } }))}
+                    placeholder="Select Local Body..."
+                    onAddNewClick={() => setShowNewLocalBody(true)}
+                  />
+                ) : (
+                  <div className="flex gap-2">
+                    <input 
+                      type="text" 
+                      name="otherLocalBody" 
+                      placeholder="Enter Custom Local Body" 
+                      value={form.personal.otherLocalBody} 
+                      onChange={handlePersChange} 
+                      className="w-full px-4 py-2.5 bg-[#F4F7FB] border border-slate-200 rounded-2xl text-sm font-semibold focus:bg-white focus:border-blue-500 outline-none text-slate-800" 
+                    />
+                    <button 
+                      type="button" 
+                      onClick={() => {
+                        setShowNewLocalBody(false);
+                        setForm(f => ({ ...f, personal: { ...f.personal, otherLocalBody: '' } }));
+                      }} 
+                      className="px-3 bg-red-50 text-red-600 rounded-2xl hover:bg-red-100 transition-colors"
+                    >
+                      <X size={16}/>
+                    </button>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-          <div>
-            <label className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">
-              <span>Ward Number / Name</span>
-            </label>
-            {!showNewWard ? (
-              <SearchableSelect 
-                options={form.personal.localBody && WARD_DATA[form.personal.localBody] ? WARD_DATA[form.personal.localBody] : Object.values(WARD_DATA).flat()}
-                value={form.personal.wardNumber}
-                onChange={handleWardChange}
-                placeholder="Select Ward..."
-                onAddNewClick={() => setShowNewWard(true)}
-              />
-            ) : (
-              <div className="flex gap-2">
-                <input 
-                  type="text" 
-                  name="otherWard" 
-                  placeholder="Enter Custom Ward" 
-                  value={form.personal.otherWard} 
-                  onChange={handlePersChange} 
-                  className="w-full px-4 py-2.5 bg-[#F4F7FB] border border-slate-200 rounded-2xl text-sm font-semibold focus:bg-white focus:border-blue-500 outline-none text-slate-800" 
-                />
-                <button 
-                  type="button" 
-                  onClick={() => {
-                    setShowNewWard(false);
-                    setForm(f => ({ ...f, personal: { ...f.personal, otherWard: '' } }));
-                  }} 
-                  className="px-3 bg-red-50 text-red-600 rounded-2xl hover:bg-red-100 transition-colors"
-                >
-                  <X size={16}/>
-                </button>
+              <div>
+                <label className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">
+                  <span>Ward Number / Name</span>
+                </label>
+                {!showNewWard ? (
+                  <SearchableSelect 
+                    options={form.personal.localBody && WARD_DATA[form.personal.localBody] ? WARD_DATA[form.personal.localBody] : Object.values(WARD_DATA).flat()}
+                    value={form.personal.wardNumber}
+                    onChange={handleWardChange}
+                    placeholder="Select Ward..."
+                    onAddNewClick={() => setShowNewWard(true)}
+                  />
+                ) : (
+                  <div className="flex gap-2">
+                    <input 
+                      type="text" 
+                      name="otherWard" 
+                      placeholder="Enter Custom Ward" 
+                      value={form.personal.otherWard} 
+                      onChange={handlePersChange} 
+                      className="w-full px-4 py-2.5 bg-[#F4F7FB] border border-slate-200 rounded-2xl text-sm font-semibold focus:bg-white focus:border-blue-500 outline-none text-slate-800" 
+                    />
+                    <button 
+                      type="button" 
+                      onClick={() => {
+                        setShowNewWard(false);
+                        setForm(f => ({ ...f, personal: { ...f.personal, otherWard: '' } }));
+                      }} 
+                      className="px-3 bg-red-50 text-red-600 rounded-2xl hover:bg-red-100 transition-colors"
+                    >
+                      <X size={16}/>
+                    </button>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </>
+          )}
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Post Office (Optional)</label>
             <input 
@@ -774,38 +814,53 @@ export function InputFormTab({
         </div>
       </div>
 
-      <div className="p-4 md:p-8 bg-[#F4F7FB]/50">
-        <div className="grid lg:grid-cols-2 gap-10">
-          <div>
-            <div id="field-subject" className="mb-6 p-2 -m-2">
-              <h3 className="font-bold text-slate-800 mb-2 flex justify-between items-center text-lg">
-                <span className="flex items-center gap-2"><MessageSquare className="text-blue-600"/> Subject (Short) *</span>
-                {formError.field === 'field-subject' && (
-                  <span className="text-red-500 text-xs animate-pulse bg-red-100 px-2 py-1 rounded">
-                    {formError.msg}
-                  </span>
-                )}
-              </h3>
+      <div className="p-4 md:p-8 bg-[#F4F7FB]/50 border-b border-slate-100">
+        <h3 className="font-bold text-slate-800 mb-6 flex items-center gap-2 text-lg">
+          <FileText className="text-blue-600"/> {form.isHelpDataMode ? 'Help Information' : 'Description'}
+        </h3>
+        <div className="grid grid-cols-1 gap-6">
+          {!form.isHelpDataMode && (
+            <div id="field-subject" className="p-2 -m-2">
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Subject *</label>
               <input 
                 required 
+                type="text"
                 value={form.subject} 
                 onChange={(e) => setForm(f => ({ ...f, subject: e.target.value }))} 
-                className="w-full px-4 py-3 border border-slate-300 rounded-2xl text-sm font-bold outline-none focus:border-blue-500 bg-white text-slate-800" 
-                placeholder="Briefly state the subject..." 
+                placeholder="Enter subject"
+                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl text-base font-semibold focus:border-blue-500 outline-none transition-all text-slate-800 shadow-sm" 
               />
             </div>
-            <div className="mb-6">
-              <h3 className="font-bold text-slate-800 mb-2 flex items-center gap-2 text-lg">
-                <FileText className="text-blue-600"/> Detailed Description (Optional)
-              </h3>
-              <textarea 
-                value={form.description} 
-                onChange={(e) => setForm(f => ({ ...f, description: e.target.value }))} 
-                className="w-full px-4 py-3 border border-slate-300 rounded-2xl text-sm font-medium h-32 outline-none focus:border-blue-500 bg-white text-slate-850" 
-                placeholder="Write full details here if necessary..."
-              ></textarea>
+          )}
+          
+          <div id="field-description" className="p-2 -m-2">
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">{form.isHelpDataMode ? 'Help Given Description *' : 'Description'}</label>
+            <textarea 
+              value={form.description} 
+              onChange={(e) => setForm(f => ({ ...f, description: e.target.value }))} 
+              rows={4} 
+              className="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm focus:border-blue-500 outline-none transition-all text-slate-700 shadow-sm leading-relaxed" 
+            />
+          </div>
+
+          {form.isHelpDataMode && (
+            <div id="field-amountWorth" className="p-2 -m-2">
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Amount Worth (Optional)</label>
+              <input 
+                type="text"
+                value={form.amountWorth} 
+                onChange={(e) => setForm(f => ({ ...f, amountWorth: e.target.value }))} 
+                placeholder="e.g. 5000, Rs 500, Kit"
+                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl text-base font-semibold focus:border-emerald-500 outline-none transition-all text-slate-800 shadow-sm" 
+              />
             </div>
-            
+          )}
+        </div>
+      </div>
+      
+      {!form.isHelpDataMode && (
+        <div className="p-4 md:p-8 bg-white border-b border-slate-100">
+          <div className="grid lg:grid-cols-2 gap-10">
             <div className="mb-6 p-5 bg-white border border-slate-300 rounded-2xl">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-bold text-slate-800 flex items-center gap-2 text-sm">
@@ -861,104 +916,96 @@ export function InputFormTab({
               )}
             </div>
 
-            {isInvitation && (
-              <div className="mt-4 p-5 bg-blue-50 border border-blue-200 rounded-2xl">
-                <label className="block text-xs font-bold text-blue-800 uppercase tracking-widest mb-2 flex items-center gap-2">
-                  <CalendarPlus size={16}/> Program Date
-                </label>
-                <input 
-                  type="datetime-local" 
-                  required 
-                  value={form.programDate} 
-                  onChange={(e) => setForm(f => ({ ...f, programDate: e.target.value }))} 
-                  className="w-full px-4 py-3 border border-blue-300 rounded-2xl font-bold outline-none focus:border-blue-500 bg-white text-slate-800" 
-                />
-              </div>
-            )}
-          </div>
-
-          <div className="flex flex-col h-full">
-            <div id="field-assignedTo" className="p-2 -m-2 mb-auto">
-              <h3 className="font-bold text-slate-800 mb-4 flex justify-between items-center text-lg">
-                <span className="flex items-center gap-2"><Users className="text-blue-600"/> Assign To *</span>
-                {formError.field === 'field-assignedTo' && (
-                  <span className="text-red-500 text-xs animate-pulse bg-red-100 px-2 py-1 rounded">
-                    {formError.msg}
-                  </span>
-                )}
-              </h3>
-              {form.isLocalWork ? (
-                <div className="bg-green-50 border border-green-200 p-5 rounded-2xl flex items-center gap-3 text-green-800 font-bold mb-6">
-                  <Plus size={24} className="text-green-600"/> Local Work: No officers assigned.
-                </div>
-              ) : isInvitation ? (
-                <div className="bg-indigo-50 border border-indigo-200 p-5 rounded-2xl flex items-center gap-3 text-indigo-800 font-bold mb-6">
-                  <Plus size={24} className="text-indigo-600"/> Auto-Assigned exclusively to M. Liju (MLA)
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 gap-3 mb-6">
-                  {users.map(u => (
-                    <label 
-                      key={u.id} 
-                      className={`flex items-center gap-3 cursor-pointer transition-all duration-300 hover:bg-slate-50 p-3 rounded-2xl border transition-all font-bold text-sm ${form.assignedTo.includes(u.id) ? 'bg-indigo-50 border-indigo-400 text-indigo-800 shadow-sm' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'}`}
-                    >
-                      <input 
-                        type="checkbox" 
-                        checked={form.assignedTo.includes(u.id)} 
-                        onChange={() => setForm(f => ({
-                          ...f,
-                          assignedTo: f.assignedTo.includes(u.id) 
-                            ? f.assignedTo.filter(id => id !== u.id) 
-                            : [...f.assignedTo, u.id]
-                        }))} 
-                        className="w-4 h-4 text-indigo-600 rounded bg-white" 
-                      />
-                      {u.name}
-                    </label>
-                  ))}
+            <div className="flex flex-col h-full gap-6">
+              {isInvitation && (
+                <div className="p-5 bg-blue-50 border border-blue-200 rounded-2xl">
+                  <label className="block text-xs font-bold text-blue-800 uppercase tracking-widest mb-2 flex items-center gap-2">
+                    <CalendarPlus size={16}/> Program Date
+                  </label>
+                  <input 
+                    type="datetime-local" 
+                    required 
+                    value={form.programDate} 
+                    onChange={(e) => setForm(f => ({ ...f, programDate: e.target.value }))} 
+                    className="w-full px-4 py-3 border border-blue-300 rounded-2xl font-bold outline-none focus:border-blue-500 bg-white text-slate-800" 
+                  />
                 </div>
               )}
-              <div className="bg-amber-50 border border-amber-200 p-5 rounded-2xl">
-                <label className="block text-xs font-bold text-amber-800 uppercase tracking-widest mb-2 flex items-center gap-2">
-                  <Clock size={16}/> Target Deadline (Optional)
-                </label>
-                <input 
-                  type="datetime-local" 
-                  value={form.customDeadline} 
-                  onChange={(e) => setForm(f => ({ ...f, customDeadline: e.target.value }))} 
-                  className="w-full px-4 py-3 border border-amber-300 rounded-2xl font-bold outline-none focus:border-amber-500 bg-white text-sm text-slate-800" 
-                />
-                <p className="text-[10px] font-bold text-amber-600 mt-2">
-                  If left blank, deadline defaults to exactly 24 hours from now.
-                </p>
+              
+              <div id="field-assignedTo" className="p-2 -m-2 mb-auto">
+                <h3 className="font-bold text-slate-800 mb-4 flex justify-between items-center text-lg">
+                  <span className="flex items-center gap-2"><Users className="text-blue-600"/> Assign To *</span>
+                  {formError.field === 'field-assignedTo' && (
+                    <span className="text-red-500 text-xs animate-pulse bg-red-100 px-2 py-1 rounded">
+                      {formError.msg}
+                    </span>
+                  )}
+                </h3>
+                {form.isLocalWork ? (
+                  <div className="bg-green-50 border border-green-200 p-5 rounded-2xl flex items-center gap-3 text-green-800 font-bold mb-6">
+                    <Plus size={24} className="text-green-600"/> Local Work: No officers assigned.
+                  </div>
+                ) : isInvitation ? (
+                  <div className="bg-indigo-50 border border-indigo-200 p-5 rounded-2xl flex items-center gap-3 text-indigo-800 font-bold mb-6">
+                    <Plus size={24} className="text-indigo-600"/> Auto-Assigned exclusively to M. Liju (MLA)
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3 mb-6">
+                    {users.map(u => (
+                      <label 
+                        key={u.id} 
+                        className={`flex items-center gap-3 cursor-pointer transition-all duration-300 hover:bg-slate-50 p-3 rounded-2xl border transition-all font-bold text-sm ${form.assignedTo.includes(u.id) ? 'bg-indigo-50 border-indigo-400 text-indigo-800 shadow-sm' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'}`}
+                      >
+                        <input 
+                          type="checkbox" 
+                          checked={form.assignedTo.includes(u.id)} 
+                          onChange={() => setForm(f => ({
+                            ...f,
+                            assignedTo: f.assignedTo.includes(u.id) 
+                              ? f.assignedTo.filter(id => id !== u.id) 
+                              : [...f.assignedTo, u.id]
+                          }))} 
+                          className="w-4 h-4 text-indigo-600 rounded bg-white" 
+                        />
+                        {u.name}
+                      </label>
+                    ))}
+                  </div>
+                )}
+                <div className="bg-amber-50 border border-amber-200 p-5 rounded-2xl">
+                  <label className="block text-xs font-bold text-amber-800 uppercase tracking-widest mb-2 flex items-center gap-2">
+                    <Clock size={16}/> Target Deadline (Optional)
+                  </label>
+                  <input 
+                    type="datetime-local" 
+                    value={form.customDeadline} 
+                    onChange={(e) => setForm(f => ({ ...f, customDeadline: e.target.value }))} 
+                    className="w-full px-4 py-3 border border-amber-300 rounded-2xl font-bold outline-none focus:border-amber-500 bg-white text-sm text-slate-800" 
+                  />
+                  <p className="text-[10px] font-bold text-amber-600 mt-2">
+                    If left blank, deadline defaults to exactly 24 hours from now.
+                  </p>
+                </div>
               </div>
             </div>
-
-            {EXT_LINKS[form.category] && (
-              <div className="mt-8 bg-blue-50 border border-blue-200 rounded-[20px] p-4 md:p-8 text-center shadow-sm">
-                <h4 className="text-blue-900 font-bold mb-2 flex items-center justify-center gap-2">Official Portal Registration</h4>
-                <p className="text-blue-700 text-sm font-medium mb-4">Ensure this request is also registered on the official {form.category} website if required.</p>
-                <a 
-                  href={EXT_LINKS[form.category]} 
-                  target="_blank" 
-                  rel="noreferrer" 
-                  className="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-3 rounded-2xl font-bold hover:bg-blue-700 hover:-translate-y-0.5 transition-all duration-300 transition-colors shadow-sm"
-                >
-                  <ExternalLink size={18}/> Go to {form.category} Official Portal
-                </a>
-              </div>
-            )}
           </div>
         </div>
-      </div>
+      )}
+
+      {EXT_LINKS[form.category] && !form.isHelpDataMode && (
+        <div className="p-8 bg-blue-50 border-b border-blue-100 text-center">
+          <h4 className="text-blue-900 font-bold mb-2">Official Portal Registration</h4>
+          <a href={EXT_LINKS[form.category]} target="_blank" rel="noreferrer" className="text-blue-600 font-bold underline">Go to {form.category} Official Portal</a>
+        </div>
+      )}
 
       <div className="p-4 md:p-8 border-t border-slate-200 bg-white flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8">
-        {!form.isSelfMode ? (
+        {!form.isSelfMode && !form.isHelpDataMode ? (
           <div className="flex flex-col md:flex-row gap-3">
             <label className="flex items-center gap-3 cursor-pointer transition-all duration-300 hover:bg-slate-50 bg-green-50 px-5 py-3 rounded-2xl border border-green-200">
               <input 
                 type="checkbox" 
-                checked={sendWaMsg} 
+                checked={sendWaMsg}
                 onChange={(e) => setSendWaMsg(e.target.checked)} 
                 className="w-5 h-5 text-green-600 rounded bg-white" 
               />
@@ -979,7 +1026,7 @@ export function InputFormTab({
             </label>
           </div>
         ) : (
-          <div className="text-sm font-bold text-slate-400 italic">WhatsApp updates disabled in Self Mode.</div>
+          <div className="text-sm font-bold text-slate-400 italic">WhatsApp updates disabled in this mode.</div>
         )}
         <button 
           type="submit" 

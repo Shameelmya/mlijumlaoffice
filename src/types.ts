@@ -65,8 +65,10 @@ export interface Task {
   personalDetails: PersonalDetails;
   taskType?: string;
   isSelfMode?: boolean;
+  isHelpData?: boolean;
   subject: string;
   description?: string;
+  amountWorth?: string;
   assignedTo: string[];
   deadline: string;
   programDate?: string | null;

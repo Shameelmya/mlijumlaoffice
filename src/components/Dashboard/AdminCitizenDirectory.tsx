@@ -25,6 +25,7 @@ export function AdminCitizenDirectory({
   triggerDownloadPDF,
   onCitizenClick
 }: AdminCitizenDirectoryProps) {
+  const [activeTab, setActiveTab] = useState<'directory' | 'help'>('directory');
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('visits');
   const [visibleCount, setVisibleCount] = useState(50);
@@ -66,7 +67,20 @@ export function AdminCitizenDirectory({
       );
   }, [tasks, search, sortBy]);
 
+  const helpDataTasks = useMemo(() => {
+    return tasks
+      .filter(t => t.isHelpData)
+      .filter(t => 
+        (t.personalDetails?.name || '').toLowerCase().includes(search.toLowerCase()) || 
+        (t.personalDetails?.mobileNumber || '').includes(search) || 
+        (t.personalDetails?.place || '').toLowerCase().includes(search.toLowerCase()) ||
+        (t.description || '').toLowerCase().includes(search.toLowerCase())
+      )
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }, [tasks, search]);
+
   const displayed = useMemo(() => citizensData.slice(0, visibleCount), [citizensData, visibleCount]);
+  const displayedHelp = useMemo(() => helpDataTasks.slice(0, visibleCount), [helpDataTasks, visibleCount]);
 
   const handleDownloadCSV = () => {
     const headers = [
@@ -98,6 +112,27 @@ export function AdminCitizenDirectory({
     link.click();
   };
 
+  const handleDownloadHelpCSV = () => {
+    const headers = [
+      'Date', 'Name', 'Mobile Number', 'Place', 'Help Description', 'Amount Worth'
+    ];
+    const rows = helpDataTasks.map(t => [
+      formatDate(t.createdAt),
+      t.personalDetails?.name || '-',
+      t.personalDetails?.mobileNumber || '-',
+      t.personalDetails?.place || '-',
+      t.description || '-',
+      t.amountWorth || '-'
+    ]);
+    const csvContent = [headers.join(','), ...rows.map(r => r.map(f => `"${String(f).replace(/"/g, '""')}"`).join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Help_Data_Register_${new Date().toISOString()}.csv`);
+    link.click();
+  };
+
   const formatWhatsAppNo = (phone: string | null | undefined): string => {
     if (!phone) return '';
     const cleanPhone = phone.replace(/\D/g, '');
@@ -115,25 +150,47 @@ export function AdminCitizenDirectory({
         </div>
         <div className="flex gap-2">
           <button 
-            onClick={handleDownloadCSV} 
+            onClick={activeTab === 'directory' ? handleDownloadCSV : handleDownloadHelpCSV} 
             className="bg-teal-50 text-teal-700 hover:bg-teal-100 px-4 py-2 rounded-2xl text-sm font-bold flex items-center gap-2 transition-colors border border-teal-200"
           >
             <List size={16}/> Export CSV
           </button>
-          <button 
-            onClick={() => triggerCitizenPrint(citizensData)} 
-            className="bg-blue-600 text-white hover:bg-blue-700 hover:-translate-y-0.5 transition-all duration-300 shadow-sm px-4 py-2 rounded-2xl text-sm font-bold flex items-center gap-2 transition-colors"
-          >
-            <Printer size={16}/> Print
-          </button>
-          <button 
-            onClick={() => triggerDownloadPDF(citizensData)} 
-            className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-2xl text-sm font-bold flex items-center gap-2 transition-colors"
-          >
-            <Download size={16}/> PDF
-          </button>
+          {activeTab === 'directory' && (
+            <>
+              <button 
+                onClick={() => triggerCitizenPrint(citizensData)} 
+                className="bg-blue-600 text-white hover:bg-blue-700 hover:-translate-y-0.5 transition-all duration-300 shadow-sm px-4 py-2 rounded-2xl text-sm font-bold flex items-center gap-2 transition-colors"
+              >
+                <Printer size={16}/> Print
+              </button>
+              <button 
+                onClick={() => triggerDownloadPDF(citizensData)} 
+                className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-2xl text-sm font-bold flex items-center gap-2 transition-colors"
+              >
+                <Download size={16}/> PDF
+              </button>
+            </>
+          )}
         </div>
       </div>
+      
+      <div className="flex border-b border-slate-200 mb-6 gap-6">
+        <button
+          onClick={() => { setActiveTab('directory'); setVisibleCount(50); }}
+          className={`pb-3 font-bold text-sm sm:text-base transition-colors relative ${activeTab === 'directory' ? 'text-teal-700' : 'text-slate-400 hover:text-slate-600'}`}
+        >
+          Citizen Directory
+          {activeTab === 'directory' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-600 rounded-t-full"></div>}
+        </button>
+        <button
+          onClick={() => { setActiveTab('help'); setVisibleCount(50); }}
+          className={`pb-3 font-bold text-sm sm:text-base transition-colors relative ${activeTab === 'help' ? 'text-emerald-700' : 'text-slate-400 hover:text-slate-600'}`}
+        >
+          Help Data Register
+          {activeTab === 'help' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-600 rounded-t-full"></div>}
+        </button>
+      </div>
+
       <div className="flex gap-2 sm:gap-5 mb-4 sm:mb-6 bg-[#F4F7FB] p-3 sm:p-5 rounded-[16px] sm:rounded-2xl border border-slate-200">
         <div className="relative flex-1">
           <Search size={18} className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -149,20 +206,24 @@ export function AdminCitizenDirectory({
           <div className="pl-3 pr-1 py-2 text-slate-500 pointer-events-none">
             <Filter size={18} />
           </div>
-          <select 
-            value={sortBy} 
-            onChange={e => setSortBy(e.target.value)} 
-            className="bg-transparent pl-1 pr-3 py-2 font-bold text-[11px] sm:text-sm text-slate-700 outline-none cursor-pointer appearance-none text-center"
-            title="Sort By"
-          >
-            <option value="visits">Visits</option>
-            <option value="recent">Recent</option>
-            <option value="name">A-Z</option>
-          </select>
+          {activeTab === 'directory' && (
+            <select 
+              value={sortBy} 
+              onChange={e => setSortBy(e.target.value)} 
+              className="bg-transparent pl-1 pr-3 py-2 font-bold text-[11px] sm:text-sm text-slate-700 outline-none cursor-pointer appearance-none text-center"
+              title="Sort By"
+            >
+              <option value="visits">Visits</option>
+              <option value="recent">Recent</option>
+              <option value="name">A-Z</option>
+            </select>
+          )}
         </div>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm text-slate-700 whitespace-nowrap">
+      
+      {activeTab === 'directory' ? (
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm text-slate-700 whitespace-nowrap">
           <thead className="bg-slate-100 border-y border-slate-200 text-slate-500 uppercase text-xs tracking-widest font-bold">
             <tr>
               <th className="px-4 py-3">Citizen Name & Desig.</th>
@@ -233,17 +294,81 @@ export function AdminCitizenDirectory({
             )}
           </tbody>
         </table>
-        {visibleCount < citizensData.length && (
-          <div className="py-4 text-center">
-            <button 
-              onClick={() => setVisibleCount(v => v + 50)} 
-              className="px-6 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full font-bold text-sm transition-colors shadow-sm"
-            >
-              Load More Directory ({citizensData.length - visibleCount} remaining)
-            </button>
+            {visibleCount < citizensData.length && (
+              <div className="py-4 text-center">
+                <button 
+                  onClick={() => setVisibleCount(v => v + 50)} 
+                  className="px-6 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full font-bold text-sm transition-colors shadow-sm"
+                >
+                  Load More Directory ({citizensData.length - visibleCount} remaining)
+                </button>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm text-slate-700 whitespace-nowrap">
+            <thead className="bg-emerald-50 border-y border-emerald-100 text-emerald-700 uppercase text-xs tracking-widest font-bold">
+              <tr>
+                <th className="px-4 py-3">Date</th>
+                <th className="px-4 py-3">Recipient Name</th>
+                <th className="px-4 py-3">Contact & Location</th>
+                <th className="px-4 py-3">Help Description</th>
+                <th className="px-4 py-3">Amount Worth</th>
+                <th className="px-4 py-3 text-center">View</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {displayedHelp.map((t, i) => (
+                <tr key={i} className="hover:bg-[#F4F7FB]">
+                  <td className="px-4 py-3 text-xs font-bold text-slate-500">{formatDate(t.createdAt)}</td>
+                  <td className="px-4 py-3">
+                    <span className="font-bold text-slate-800 text-base">{t.personalDetails?.name || '-'}</span>
+                  </td>
+                  <td className="px-4 py-3 font-medium text-slate-600">
+                    <span className="flex items-center gap-1.5"><Phone size={12}/> {t.personalDetails?.mobileNumber || '-'}</span>
+                    <span className="block text-xs mt-1 text-slate-500">{t.personalDetails?.place || '-'}</span>
+                  </td>
+                  <td className="px-4 py-3 text-sm text-slate-700 whitespace-normal min-w-[200px]">
+                    {t.description || '-'}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold">
+                      {t.amountWorth || '-'}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    <button 
+                      onClick={() => onCitizenClick?.(t.personalDetails.mobileNumber)}
+                      className="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded-lg text-xs font-bold inline-flex items-center gap-1.5 transition-colors"
+                      title="Full Data View"
+                    >
+                      <Eye size={14}/> View
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {displayedHelp.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="text-center py-8 text-slate-500 font-medium">
+                    No help data matches the search criteria.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+          {visibleCount < helpDataTasks.length && (
+            <div className="py-4 text-center">
+              <button 
+                onClick={() => setVisibleCount(v => v + 50)} 
+                className="px-6 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-full font-bold text-sm transition-colors shadow-sm border border-emerald-200"
+              >
+                Load More Help Data ({helpDataTasks.length - visibleCount} remaining)
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Edit Modal */}
       {editingCitizen && (

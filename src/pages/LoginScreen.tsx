@@ -15,7 +15,6 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
   const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
   const [password, setPassword] = useState('');
   const [customEmail, setCustomEmail] = useState('');
-  const [needsCustomEmail, setNeedsCustomEmail] = useState(false);
   const [error, setError] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [keepSignedIn, setKeepSignedIn] = useState(true);
@@ -32,8 +31,8 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
       const randomQuote = MORAL_QUOTES[Math.floor(Math.random() * MORAL_QUOTES.length)];
       setDailyQuote(randomQuote);
       
-      // Calculate delay: 50ms per character, min 4s, max 8s
-      const delay = Math.max(4000, Math.min(8000, randomQuote.length * 50));
+      // Calculate delay: 50ms per character, min 4s, max 6s
+      const delay = Math.max(4000, Math.min(6000, randomQuote.length * 50));
       timeoutId = setTimeout(pickQuote, delay);
     };
     
@@ -235,20 +234,6 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
 
                   {/* Password Entry Area */}
                   <form onSubmit={handleSubmit} className="space-y-4">
-                    {needsCustomEmail && (
-                      <div className="relative group">
-                        <input 
-                          type="email" 
-                          placeholder="Your email address" 
-                          value={customEmail} 
-                          onChange={e => {
-                            setCustomEmail(e.target.value);
-                            setError('');
-                          }}
-                          className="w-full px-6 py-5 bg-slate-50 border border-slate-200 rounded-[24px] font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-lg tracking-widest text-center sm:text-left shadow-inner placeholder:text-slate-300" 
-                        />
-                      </div>
-                    )}
                     <div className="relative group">
                       <input 
                         type={showPass ? 'text' : 'password'} 
@@ -258,7 +243,7 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
                           setPassword(e.target.value);
                           setError('');
                         }}
-                        autoFocus={!needsCustomEmail}
+                        autoFocus
                         className="w-full px-6 py-5 bg-slate-50 border border-slate-200 rounded-[24px] font-bold text-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-lg tracking-widest text-center sm:text-left shadow-inner placeholder:text-slate-300" 
                       />
                       

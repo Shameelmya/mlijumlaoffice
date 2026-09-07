@@ -142,6 +142,7 @@ export default function App() {
   const [viewingTask, setViewingTask] = useState<Task | null>(null);
   const [taskToPrint, setTaskToPrint] = useState<Task | null>(null);
   const [taskToDownload, setTaskToDownload] = useState<Task | null>(null);
+  const [taskPngToDownload, setTaskPngToDownload] = useState<Task | null>(null);
   const [taskDetailsToDownload, setTaskDetailsToDownload] = useState<Task | null>(null);
   const [masterReportConfigToDownload, setMasterReportConfigToDownload] = useState<ReportConfig | null>(null);
   const [citizenDirectoryToDownload, setCitizenDirectoryToDownload] = useState<any[] | null>(null);
@@ -416,6 +417,81 @@ export default function App() {
     generatePDF(); 
   }, [taskToDownload, taskDetailsToDownload, masterReportConfigToDownload, officerReportToDownload, updationReportToDownload, recentUpdationsReportToDownload, citizenDirectoryToDownload, users, categories]);
 
+  useEffect(() => {
+    if (!taskPngToDownload) return;
+    const generatePNG = () => {
+      const el = document.getElementById('dl-ack-png');
+      if (!el) {
+        setTaskPngToDownload(null);
+        setPdfProgress(null);
+        return;
+      }
+      setTimeout(async () => {
+        try {
+          setPdfProgress({ current: 0, total: 1 });
+          await new Promise(resolve => setTimeout(resolve, 50));
+          const blob = await htmlToImage.toBlob(el, {
+            quality: 1,
+            pixelRatio: 2,
+            backgroundColor: '#ffffff',
+            style: { margin: '0' }
+          });
+          setPdfProgress({ current: 1, total: 1 });
+          
+          if (blob) {
+            let clipboardSuccess = false;
+            try {
+              if (navigator.clipboard && window.ClipboardItem) {
+                await navigator.clipboard.write([
+                  new ClipboardItem({ [blob.type]: blob })
+                ]);
+                clipboardSuccess = true;
+                alert("✅ Letter image copied to clipboard!\n\nPlease paste it (Ctrl+V) directly into the WhatsApp chat.");
+              }
+            } catch (err) {
+              console.error("Clipboard write failed:", err);
+            }
+            
+            // If clipboard fails, try native share (mostly mobile/macOS)
+            if (!clipboardSuccess && navigator.canShare) {
+              try {
+                const file = new File([blob], `Letter_${taskPngToDownload.id}.png`, { type: blob.type });
+                if (navigator.canShare({ files: [file] })) {
+                  await navigator.share({
+                    files: [file],
+                    title: 'Acknowledge Letter',
+                    text: 'Please send this letter via WhatsApp.'
+                  });
+                  clipboardSuccess = true;
+                }
+              } catch(e) {
+                console.error("Share failed", e);
+              }
+            }
+
+            // Ultimate fallback to download
+            if (!clipboardSuccess) {
+              const dataUrl = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.download = `Letter_${taskPngToDownload.id}.png`;
+              link.href = dataUrl;
+              link.click();
+              URL.revokeObjectURL(dataUrl);
+            }
+          }
+        } catch (error: any) {
+          console.error("PNG Generation Failed:", error);
+          alert("Failed to generate PNG. Error: " + (error.message || String(error)));
+        } finally {
+          document.querySelectorAll('.html2canvas-container').forEach(c => c.remove());
+          setPdfProgress(null);
+          setTaskPngToDownload(null);
+        }
+      }, 100);
+    };
+    generatePNG();
+  }, [taskPngToDownload]);
+
   const handleLogin = (user: UserType) => { 
     setCurrentUser(user); 
     localStorage.setItem('mla_currentUser', JSON.stringify(user)); 
@@ -571,13 +647,26 @@ export default function App() {
       const basePass = newUser.pass || '123456';
       const password = basePass.length < 6 ? basePass.padEnd(6, '0') : basePass;
 
-      const cred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+      let authUid = '';
+
+      try {
+        const cred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+        authUid = cred.user.uid;
+      } catch (err: any) {
+        if (err.code === 'auth/email-already-in-use') {
+          console.warn('Email already in use, reusing old auth account.');
+          alert(`Warning: The email ${email} is already linked to a previous officer account. We have restored access, but their OLD password will still apply. They cannot use the new password you just typed unless you change it in Firebase Console.`);
+          authUid = newUser.id; // Fallback or generate a consistent ID since we can't get the UID without Admin SDK, we'll just use their officer ID as their document ID in Firestore.
+        } else {
+          throw err;
+        }
+      }
       
-      const userToSave = { ...newUser, email, authUid: cred.user.uid };
+      const userToSave = { ...newUser, email, authUid: authUid };
       delete (userToSave as any).pass;
 
       const batch = writeBatch(db);
-      batch.set(getDocRef('users', cred.user.uid), userToSave);
+      batch.set(getDocRef('users', authUid), userToSave);
       batch.set(getDocRef('meta', 'login_roster'), {
         [newUser.id]: { id: newUser.id, name: newUser.name, enabled: newUser.enabled }
       }, { merge: true });
@@ -760,6 +849,7 @@ const isImpersonating = !!impersonatedUser;
 
       {taskToPrint && <div className="hidden print:block w-full bg-white text-black font-sans"><PrintAcknowledgeSlip task={taskToPrint} /></div>}
       {taskToDownload && <PDFCaptureWrapper id="dl-ack-slip" progress={pdfProgress}><PrintAcknowledgeSlip task={taskToDownload} /></PDFCaptureWrapper>}
+      {taskPngToDownload && <PDFCaptureWrapper id="dl-ack-png" progress={pdfProgress}><PrintAcknowledgeSlip task={taskPngToDownload} /></PDFCaptureWrapper>}
       
       {taskDetailsToDownload && (
         taskDetailsToDownload.isCompletionLetter ? (
@@ -923,6 +1013,7 @@ const isImpersonating = !!impersonatedUser;
               setImpersonatedUser={setImpersonatedUser} 
               triggerPrint={setTaskToPrint} 
               triggerDownloadPDF={setTaskToDownload} 
+              triggerDownloadPNG={setTaskPngToDownload}
               triggerDetailsPrint={(task) => setTaskDetailsToDownload(task)} 
               triggerDetailsDownload={setTaskDetailsToDownload} 
               triggerViewDetails={setViewingTask} 
@@ -961,6 +1052,7 @@ const isImpersonating = !!impersonatedUser;
               addInputType={addInputType}
               triggerPrint={setTaskToPrint} 
               triggerDownloadPDF={setTaskToDownload} 
+              triggerDownloadPNG={setTaskPngToDownload}
               triggerDetailsPrint={(task) => setTaskDetailsToDownload(task)} 
               triggerDetailsDownload={setTaskDetailsToDownload} 
               triggerViewDetails={setViewingTask} 

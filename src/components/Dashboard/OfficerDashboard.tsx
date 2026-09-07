@@ -7,7 +7,6 @@ import { Task, User, GlobalFilters } from '../../types';
 import { WorkerTab } from './WorkerTab';
 import { AllTasksHistoryTab } from './AllTasksHistoryTab';
 import { InputFormTab } from './InputFormTab';
-import { InputFormTab } from './InputFormTab';
 import { RecentAlertsTab } from './RecentAlertsTab';
 import { AdminGlobalView } from './AdminGlobalView';
 import { RecentUpdationsTab } from './RecentUpdationsTab';
@@ -30,6 +29,7 @@ interface OfficerDashboardProps {
   addInputType: (newType: string) => Promise<void>;
   triggerPrint: (task: Task) => void;
   triggerDownloadPDF: (task: Task) => void;
+  triggerDownloadPNG: (task: Task) => void;
   triggerDetailsPrint: (task: Task) => void;
   triggerDetailsDownload: (task: Task) => void;
   triggerViewDetails: (task: Task) => void;
@@ -86,6 +86,7 @@ export function OfficerDashboard({
   addInputType,
   triggerPrint,
   triggerDownloadPDF,
+  triggerDownloadPNG,
   triggerDetailsPrint,
   triggerDetailsDownload,
   triggerViewDetails,
@@ -122,7 +123,7 @@ export function OfficerDashboard({
     return tasks.filter(t => t.status === 'Rejected' && t.createdByUid === user.id && !t.isTrashed);
   }, [tasks, user.id]);
 
-  const baseTasks = useMemo(() => tasks.filter(t => !t.isTrashed && t.taskType !== 'direct'), [tasks]);
+  const baseTasks = useMemo(() => tasks.filter(t => !t.isTrashed && t.taskType !== 'direct' && !t.isHelpData), [tasks]);
   const total = baseTasks.length;
   const comp = baseTasks.filter(t => t.status === 'Completed').length;
   const draft = baseTasks.filter(t => t.status === 'Draft').length;
@@ -313,6 +314,7 @@ export function OfficerDashboard({
           users={users} 
           triggerPrint={triggerPrint} 
           triggerDownloadPDF={triggerDownloadPDF} 
+          triggerDownloadPNG={triggerDownloadPNG}
           creator={user} 
         />
       )}
