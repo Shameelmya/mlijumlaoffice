@@ -304,6 +304,37 @@ export function AdminCitizenDirectory({
                   />
                 </div>
                 <div>
+                  <label className="block text-xs font-bold text-slate-500 mb-1">Designation</label>
+                  <input 
+                    type="text" 
+                    value={editingCitizen.designation || ''}
+                    onChange={e => setEditingCitizen({...editingCitizen, designation: e.target.value})}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none focus:border-teal-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 mb-1">Gender</label>
+                  <select 
+                    value={editingCitizen.gender || ''}
+                    onChange={e => setEditingCitizen({...editingCitizen, gender: e.target.value})}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none focus:border-teal-500"
+                  >
+                    <option value="">Select Gender...</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 mb-1">Referral Person</label>
+                  <input 
+                    type="text" 
+                    value={editingCitizen.referralPerson || ''}
+                    onChange={e => setEditingCitizen({...editingCitizen, referralPerson: e.target.value})}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none focus:border-teal-500"
+                  />
+                </div>
+                <div>
                   <label className="block text-xs font-bold text-slate-500 mb-1">Place</label>
                   <input 
                     type="text" 
@@ -327,6 +358,24 @@ export function AdminCitizenDirectory({
                     type="text" 
                     value={editingCitizen.wardNumber || ''}
                     onChange={e => setEditingCitizen({...editingCitizen, wardNumber: e.target.value})}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none focus:border-teal-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 mb-1">Post Office</label>
+                  <input 
+                    type="text" 
+                    value={editingCitizen.postOffice || ''}
+                    onChange={e => setEditingCitizen({...editingCitizen, postOffice: e.target.value})}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none focus:border-teal-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 mb-1">PIN Code</label>
+                  <input 
+                    type="text" 
+                    value={editingCitizen.pinCode || ''}
+                    onChange={e => setEditingCitizen({...editingCitizen, pinCode: e.target.value})}
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg outline-none focus:border-teal-500"
                   />
                 </div>
@@ -358,6 +407,11 @@ export function AdminCitizenDirectory({
                           place: editingCitizen.place,
                           localBody: editingCitizen.localBody,
                           wardNumber: editingCitizen.wardNumber,
+                          designation: editingCitizen.designation,
+                          gender: editingCitizen.gender,
+                          referralPerson: editingCitizen.referralPerson,
+                          postOffice: editingCitizen.postOffice,
+                          pinCode: editingCitizen.pinCode,
                         }
                       });
                     }
