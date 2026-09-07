@@ -105,13 +105,13 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
         <div className="bg-white/90 backdrop-blur-2xl rounded-[32px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] border border-white max-w-5xl w-full overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[450px] transition-all">
           
           {/* Left Column: Logo Display */}
-          <div className="md:col-span-5 col-span-1 bg-white relative overflow-hidden min-h-[300px] flex items-center justify-center">
-            <img src="/logo.png" alt="Logo" className="absolute inset-0 w-full h-full object-contain md:object-cover object-bottom md:object-center p-4 md:p-0" />
+          <div className="md:col-span-5 col-span-1 bg-white relative overflow-hidden min-h-[200px] md:min-h-[300px] flex items-center justify-center">
+            <img src="/logo.png" alt="Logo" className="absolute inset-0 w-full h-full object-contain md:object-cover object-bottom md:object-center px-4 pt-4 pb-0 md:p-0" />
           </div>
 
           {/* Right Column */}
-          <div className="md:col-span-7 p-6 sm:p-10 md:p-12 flex flex-col justify-center bg-white relative">
-            <div className="w-full flex justify-center md:absolute md:top-6 md:right-6 md:w-auto mb-6 md:mb-0">
+          <div className="md:col-span-7 px-6 pb-6 pt-2 sm:p-10 md:p-12 flex flex-col justify-center bg-white relative">
+            <div className="w-full flex justify-center md:absolute md:top-6 md:right-6 md:w-auto mb-6 md:mb-0 mt-2 md:mt-0">
               <div className="inline-flex items-center gap-2 bg-slate-50 border border-slate-100 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl font-bold text-[12px] sm:text-xs text-slate-600 shadow-sm transition-all" style={{ fontFamily: 'inherit' }}>
                 <LiveClock className="text-slate-600 flex items-center justify-center gap-1.5" />
               </div>
