@@ -13,7 +13,7 @@ import { auth, getColRef, getDocRef, db, firebaseConfig } from './services/fireb
 // Helper Utilities & Formatting
 import { formatDate, formatTime } from './utils/formatters';
 import { 
-  DEFAULT_CATEGORIES, DEFAULT_DESIGNATIONS, DEFAULT_USERS, INPUT_TYPES 
+  DEFAULT_CATEGORIES, DEFAULT_DESIGNATIONS, DEFAULT_USERS, INPUT_TYPES, MORAL_QUOTES
 } from './utils/constants';
 import { 
   Task, User as UserType, BackupMeta, GlobalFilters, ConfirmModalState, UpdationReportConfig
@@ -79,6 +79,11 @@ export default function App() {
   const [designations, setDesignations] = useState<string[]>(DEFAULT_DESIGNATIONS);
   const [inputTypes, setInputTypes] = useState<string[]>(INPUT_TYPES);
   const [templates, setTemplates] = useState<string[]>([]);
+  
+  const [dailyQuote, setDailyQuote] = useState('');
+  useEffect(() => {
+    setDailyQuote(MORAL_QUOTES[Math.floor(Math.random() * MORAL_QUOTES.length)]);
+  }, []);
   
   const [backupMeta, setBackupMeta] = useState<BackupMeta>({ 
     lastBackup: null, 
@@ -873,6 +878,13 @@ const isImpersonating = !!impersonatedUser;
               </div>
             </div>
           </header>
+          {dailyQuote && (
+            <div className="bg-indigo-50 border-b border-indigo-100 py-1.5 px-4 text-center">
+              <p className="text-xs sm:text-sm font-semibold text-indigo-800 italic" style={{ fontFamily: "'Anek Malayalam', sans-serif" }}>
+                "{dailyQuote}"
+              </p>
+            </div>
+          )}
           <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-2 sm:py-3">
             <GlobalFilterBar />
           </div>

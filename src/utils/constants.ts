@@ -60,3 +60,12 @@ export const DEFAULT_USERS: User[] = [
   { id: 'admin', name: 'M. Liju (MLA)', role: 'admin', pass: 'Liju@2026', enabled: true, canInput: true, canSeeReports: true, canSeeGlobal: true, canSeeGlobalOverview: true, canSeeDraftsView: true, canEditGlobalOverview: true, canEditOwnInputs: true, canReassign: true, canGenerateUpdationReport: true, canSeeRecentUpdations: true, phone: '', whatsapp: '' }
 ];
 
+export const MORAL_QUOTES = [
+  "അധികാരം ഒരു അവകാശമല്ല, ജനങ്ങളോടുള്ള വലിയ ഉത്തരവാദിത്തമാണ്.",
+  "നീതി വൈകിക്കുന്നത് നീതി നിഷേധിക്കുന്നതിന് തുല്യമാണ്.",
+  "ജനാധിപത്യം എന്നാൽ ജനങ്ങളുടെ, ജനങ്ങളാൽ, ജനങ്ങൾക്കുവേണ്ടിയുള്ള ഭരണമാണ്.",
+  "സത്യസന്ധതയും അർപ്പണബോധവും ഭരണത്തിന്റെ ആണിക്കല്ലാണ്.",
+  "ജനസേവനം തന്നെയാണ് ഏറ്റവും വലിയ ഈശ്വരസേവനം.",
+  "സമൂഹത്തിലെ ഏറ്റവും ദുർബലനായ മനുഷ്യന്റെ കണ്ണീരൊപ്പുക എന്നതാണ് യഥാർത്ഥ ഭരണം."
+];
+
