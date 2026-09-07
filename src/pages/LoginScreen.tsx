@@ -89,12 +89,12 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
               
               {/* Profile Cards Selection Grid */}
               {!selectedUser ? (
-                <div className="space-y-8">
-                  <div className="mb-8 text-left">
+                <div className="space-y-4">
+                  <div className="mb-4 text-left">
                     <h3 className="text-3xl font-bold text-slate-900 tracking-tight leading-tight">
                       Sign In
                     </h3>
-                    <p className="text-slate-500 mt-2 text-sm font-medium">Select your profile to access the system</p>
+                    <p className="text-slate-500 mt-1 text-sm font-medium">Select your profile to access the system</p>
                   </div>
 
                   {/* Profile Cards list - exact match with 2-column gap-2 spacing */}
@@ -110,25 +110,25 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
                             setPassword('');
                             setError('');
                           }}
-                          className={`w-full p-5 flex items-center gap-5 border rounded-[28px] text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.06)] cursor-pointer group ${
+                          className={`w-full p-4 flex items-center gap-3 border rounded-2xl text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.06)] cursor-pointer group ${
                             isAdmin 
                               ? 'bg-blue-50/50 border-blue-100 hover:bg-blue-50 hover:border-blue-200' 
                               : 'bg-slate-50 border-slate-100 hover:bg-slate-100'
                           }`}
                         >
                           {/* Profile rounded icon area */}
-                          <div className={`h-14 w-14 rounded-[20px] flex items-center justify-center shrink-0 shadow-sm transition-transform group-hover:scale-110 ${
+                          <div className={`h-11 w-11 rounded-xl flex items-center justify-center shrink-0 shadow-sm transition-transform group-hover:scale-110 ${
                             isAdmin ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white' : 'bg-white text-slate-400 border border-slate-200'
                           }`}>
-                            {isAdmin ? <Shield size={24} /> : <UserIcon size={24} />}
+                            {isAdmin ? <Shield size={20} /> : <UserIcon size={20} />}
                           </div>
                           
                           {/* Profile name and tag details */}
                           <div className="flex-1 min-w-0">
-                            <p className="text-lg font-bold text-slate-800 tracking-tight whitespace-normal break-words leading-tight mb-1.5">
+                            <p className="text-base font-bold text-slate-800 tracking-tight whitespace-normal break-words leading-tight mb-0.5">
                               {u.name}
                             </p>
-                            <span className="text-[11px] font-bold uppercase text-slate-400 tracking-widest block">
+                            <span className="text-[10px] font-bold uppercase text-slate-400 tracking-widest block">
                               {isAdmin ? 'Super Admin' : 'Officer Login'}
                             </span>
                           </div>
