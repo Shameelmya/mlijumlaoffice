@@ -195,7 +195,13 @@ export default function App() {
   useEffect(() => {
     if (currentUser && ['admin', 'subadmin'].includes(currentUser.role)) {
       const unsub = onSnapshot(getColRef('users'), (snapshot) => {
-        setUsers(snapshot.docs.map(doc => doc.data() as UserType));
+        const fetchedUsers = snapshot.docs.map(doc => doc.data() as UserType);
+        fetchedUsers.sort((a, b) => {
+          if (a.role === 'admin' && b.role !== 'admin') return -1;
+          if (b.role === 'admin' && a.role !== 'admin') return 1;
+          return a.name.localeCompare(b.name);
+        });
+        setUsers(fetchedUsers);
       }, (err) => console.error("Users fetch error:", err));
       return unsub;
     } else {
@@ -209,6 +215,13 @@ export default function App() {
           rosterUsers.forEach(ru => {
             if (ru.id !== 'admin') mergedUsers.push(ru);
           });
+          
+          mergedUsers.sort((a, b) => {
+            if (a.role === 'admin' && b.role !== 'admin') return -1;
+            if (b.role === 'admin' && a.role !== 'admin') return 1;
+            return a.name.localeCompare(b.name);
+          });
+          
           setUsers(mergedUsers);
         } else {
           setUsers(DEFAULT_USERS);
