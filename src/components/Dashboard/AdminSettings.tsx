@@ -37,7 +37,8 @@ export function AdminSettings({
     canEditOwnInputs: false,
     canReassign: false,
     canGenerateUpdationReport: false,
-    canSeeRecentUpdations: false
+    canSeeRecentUpdations: false,
+    canSeeHelpData: false
   });
 
   const handleToggle = (id: string, field: keyof User) => {
@@ -76,7 +77,8 @@ export function AdminSettings({
       canEditOwnInputs: !!newOffForm.canEditOwnInputs,
       canReassign: !!newOffForm.canReassign,
       canGenerateUpdationReport: !!newOffForm.canGenerateUpdationReport,
-      canSeeRecentUpdations: !!newOffForm.canSeeRecentUpdations
+      canSeeRecentUpdations: !!newOffForm.canSeeRecentUpdations,
+      canSeeHelpData: !!newOffForm.canSeeHelpData
     };
     await addUser(newUser);
     setNewOffForm({
@@ -94,7 +96,8 @@ export function AdminSettings({
       canEditOwnInputs: false,
       canReassign: false,
       canGenerateUpdationReport: false,
-      canSeeRecentUpdations: false
+      canSeeRecentUpdations: false,
+      canSeeHelpData: false
     });
     alert("New officer successfully created.");
   };
@@ -215,6 +218,10 @@ export function AdminSettings({
                     <label className="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:bg-slate-50 p-1.5 rounded-lg text-xs font-semibold text-slate-700">
                       <input type="checkbox" checked={!!u.canSeeRecentUpdations} onChange={() => handleToggle(u.id, 'canSeeRecentUpdations')} className="w-3.5 h-3.5 disabled:opacity-50 text-emerald-600 rounded-sm focus:ring-0"/>
                       Recent Updations Tab
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:bg-slate-50 p-1.5 rounded-lg text-xs font-semibold text-slate-700">
+                      <input type="checkbox" checked={!!u.canSeeHelpData} onChange={() => handleToggle(u.id, 'canSeeHelpData')} className="w-3.5 h-3.5 disabled:opacity-50 text-indigo-600 rounded-sm focus:ring-0"/>
+                      Read Help Data
                     </label>
                   </div>
                 </div>
@@ -376,6 +383,17 @@ export function AdminSettings({
                 />
                 <span className="text-sm font-semibold text-slate-700">
                   Recent Updations Tab
+                </span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:bg-slate-50">
+                <input 
+                  type="checkbox" 
+                  checked={newOffForm.canSeeHelpData} 
+                  onChange={e => setNewOffForm({...newOffForm, canSeeHelpData: e.target.checked})} 
+                  className="w-4 h-4 text-indigo-600 rounded"
+                />
+                <span className="text-sm font-semibold text-slate-700">
+                  Read Help Data
                 </span>
               </label>
             </div> 

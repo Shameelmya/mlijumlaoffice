@@ -149,12 +149,21 @@ export function AdminCitizenDirectory({
           <p className="text-slate-500 font-medium mt-1">Track frequency of citizen visits based on registered mobile numbers.</p>
         </div>
         <div className="flex gap-2">
-          <button 
-            onClick={activeTab === 'directory' ? handleDownloadCSV : handleDownloadHelpCSV} 
-            className="bg-teal-50 text-teal-700 hover:bg-teal-100 px-4 py-2 rounded-2xl text-sm font-bold flex items-center gap-2 transition-colors border border-teal-200"
-          >
-            <List size={16}/> Export CSV
-          </button>
+          {activeTab === 'directory' ? (
+            <button 
+              onClick={handleDownloadCSV} 
+              className="bg-teal-50 text-teal-700 hover:bg-teal-100 px-4 py-2 rounded-2xl text-sm font-bold flex items-center gap-2 transition-colors border border-teal-200"
+            >
+              <List size={16}/> Export CSV
+            </button>
+          ) : (
+            <button 
+              onClick={handleDownloadHelpCSV} 
+              className="bg-teal-50 text-teal-700 hover:bg-teal-100 px-4 py-2 rounded-2xl text-sm font-bold flex items-center gap-2 transition-colors border border-teal-200"
+            >
+              <List size={16}/> Export CSV
+            </button>
+          )}
           {activeTab === 'directory' && (
             <>
               <button 
@@ -182,13 +191,15 @@ export function AdminCitizenDirectory({
           Citizen Directory
           {activeTab === 'directory' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-600 rounded-t-full"></div>}
         </button>
-        <button
-          onClick={() => { setActiveTab('help'); setVisibleCount(50); }}
-          className={`pb-3 font-bold text-sm sm:text-base transition-colors relative ${activeTab === 'help' ? 'text-emerald-700' : 'text-slate-400 hover:text-slate-600'}`}
-        >
-          Help Data Register
-          {activeTab === 'help' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-600 rounded-t-full"></div>}
-        </button>
+        {(currentUser?.role === 'admin' || currentUser?.canSeeHelpData) && (
+          <button
+            onClick={() => { setActiveTab('help'); setVisibleCount(50); }}
+            className={`pb-3 font-bold text-sm sm:text-base transition-colors relative ${activeTab === 'help' ? 'text-emerald-700' : 'text-slate-400 hover:text-slate-600'}`}
+          >
+            Help Data Register
+            {activeTab === 'help' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-600 rounded-t-full"></div>}
+          </button>
+        )}
       </div>
 
       <div className="flex gap-2 sm:gap-5 mb-4 sm:mb-6 bg-[#F4F7FB] p-3 sm:p-5 rounded-[16px] sm:rounded-2xl border border-slate-200">
