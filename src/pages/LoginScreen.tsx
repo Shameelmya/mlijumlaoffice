@@ -79,7 +79,7 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
         {dailyQuote && (
           <div className="w-full max-w-5xl mx-auto mb-10 text-center px-4">
             <p 
-              className="text-base md:text-lg text-slate-700 tracking-wide" 
+              className="text-sm md:text-base text-slate-700 tracking-wide leading-relaxed" 
               style={{ 
                 fontFamily: '"Anek Malayalam", sans-serif',
                 fontOpticalSizing: 'auto',
@@ -88,7 +88,15 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
                 fontVariationSettings: '"wdth" 100'
               }}
             >
-              {dailyQuote}
+              {dailyQuote.split(' - ')[0]}
+              {dailyQuote.split(' - ')[1] && (
+                <>
+                  <br />
+                  <span className="text-xs md:text-sm text-slate-500 opacity-90 mt-0.5 inline-block">
+                    - {dailyQuote.split(' - ')[1]}
+                  </span>
+                </>
+              )}
             </p>
           </div>
         )}
