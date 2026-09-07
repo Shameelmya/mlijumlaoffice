@@ -26,7 +26,20 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
   
   const [dailyQuote, setDailyQuote] = useState('');
   useEffect(() => {
-    setDailyQuote(MORAL_QUOTES[Math.floor(Math.random() * MORAL_QUOTES.length)]);
+    let timeoutId: NodeJS.Timeout;
+    
+    const pickQuote = () => {
+      const randomQuote = MORAL_QUOTES[Math.floor(Math.random() * MORAL_QUOTES.length)];
+      setDailyQuote(randomQuote);
+      
+      // Calculate delay: 50ms per character, min 4s, max 8s
+      const delay = Math.max(4000, Math.min(8000, randomQuote.length * 50));
+      timeoutId = setTimeout(pickQuote, delay);
+    };
+    
+    pickQuote();
+    
+    return () => clearTimeout(timeoutId);
   }, []);
 
   const handleSubmit = async (e: FormEvent) => {
@@ -72,7 +85,7 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
         
         {/* Quote Above Container Directly on Background */}
         {dailyQuote && (
-          <div className="w-full max-w-5xl mx-auto mb-10 text-center px-4">
+          <div key={dailyQuote} className="w-full max-w-5xl mx-auto mb-10 text-center px-4 animate-in fade-in duration-700">
             <p 
               className="text-sm md:text-base text-slate-700 tracking-wide leading-relaxed" 
               style={{ 
