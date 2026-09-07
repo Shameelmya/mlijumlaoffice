@@ -398,15 +398,25 @@ const AdminTaskCard = React.memo(({
     window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(waMessage)}`, '_blank');
   };
 
-  const cardBg = t.isSelfMode 
-    ? 'bg-yellow-50/70 border-yellow-300' 
-    : t.isReadByAdmin 
-      ? 'bg-white border-slate-200'
-      : 'bg-[#E8F2FF] border-blue-200';
+  const getCardBg = () => {
+    if (t.isSelfMode) return 'bg-yellow-50 border-yellow-300';
+    switch (t.status) {
+      case 'Completed': return 'bg-green-50 border-green-200';
+      case 'D Finished': return 'bg-emerald-50 border-emerald-200';
+      case 'In Progress': return 'bg-blue-50 border-blue-200';
+      case 'Pending': return 'bg-red-50 border-red-200';
+      case 'Draft': return 'bg-slate-50 border-slate-200';
+      case 'Local Work': return 'bg-indigo-50 border-indigo-200';
+      default: return 'bg-white border-slate-200';
+    }
+  };
+
+  const cardBg = getCardBg();
+  const unreadStyle = !t.isReadByAdmin && !t.isSelfMode ? 'border-l-[6px] border-l-blue-600 shadow-md' : 'border';
 
   return (
     <div 
-      className={`${cardBg} rounded-[20px] p-5 border shadow-sm flex flex-col transition-all relative overflow-hidden ${t.status === 'Unsolved' ? 'border-slate-300 bg-[#F4F7FB] opacity-75 grayscale' : 'hover:shadow-md hover:border-blue-300'}`}
+      className={`${cardBg} ${unreadStyle} rounded-[20px] p-5 shadow-sm flex flex-col transition-all relative overflow-hidden ${t.status === 'Unsolved' ? '!bg-[#F4F7FB] !border-slate-300 opacity-75 grayscale' : 'hover:shadow-md'}`}
       onContextMenu={(e) => {
         e.preventDefault();
         if (t.isReadByAdmin) updateTask(t.id, { isReadByAdmin: false });

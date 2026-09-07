@@ -601,7 +601,7 @@ export default function App() {
     const batch = writeBatch(db);
     batch.set(getDocRef('users', user.authUid), { [field]: value }, { merge: true });
     
-    if (field === 'enabled' || field === 'name') {
+    if (field === 'enabled' || field === 'name' || field === 'email') {
       batch.set(getDocRef('meta', 'login_roster'), {
         [userId]: { [field]: value }
       }, { merge: true });
@@ -667,7 +667,7 @@ export default function App() {
       const batch = writeBatch(db);
       batch.set(getDocRef('users', authUid), userToSave);
       batch.set(getDocRef('meta', 'login_roster'), {
-        [newUser.id]: { id: newUser.id, name: newUser.name, enabled: newUser.enabled }
+        [newUser.id]: { id: newUser.id, name: newUser.name, enabled: newUser.enabled, email: email }
       }, { merge: true });
       await batch.commit();
 

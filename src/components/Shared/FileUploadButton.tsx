@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { UploadCloud, Link as LinkIcon, Loader2, File, CheckCircle2, AlertCircle } from 'lucide-react';
+import { UploadCloud, Link as LinkIcon, Loader2, File, CheckCircle2, AlertCircle, Camera } from 'lucide-react';
 import { uploadToGoogleDrive } from '../../utils/fileUpload';
 import { Attachment } from '../../types';
 import { generateUid, getNow } from '../../utils/formatters';
@@ -16,6 +16,7 @@ export function FileUploadButton({ onUploadSuccess, onManualLinkAdd, uploaderId 
   const [manualUrl, setManualUrl] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -96,11 +97,19 @@ export function FileUploadButton({ onUploadSuccess, onManualLinkAdd, uploaderId 
           onChange={handleFileSelect}
           accept="image/jpeg, image/png, application/pdf"
         />
+        <input 
+          type="file" 
+          className="hidden" 
+          ref={cameraInputRef}
+          onChange={handleFileSelect}
+          accept="image/*"
+          capture="environment"
+        />
         <button
           type="button"
           disabled={isUploading}
           onClick={() => fileInputRef.current?.click()}
-          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 border-2 border-dashed rounded-2xl font-bold text-sm transition-all ${
+          className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 border-2 border-dashed rounded-2xl font-bold text-xs sm:text-sm transition-all ${
             isUploading 
               ? 'border-blue-300 bg-blue-50 text-blue-500 cursor-wait' 
               : 'border-slate-300 hover:border-blue-400 hover:bg-blue-50 text-slate-600 hover:text-blue-600 bg-[#F4F7FB]/50'
@@ -109,7 +118,23 @@ export function FileUploadButton({ onUploadSuccess, onManualLinkAdd, uploaderId 
           {isUploading ? (
             <><Loader2 size={16} className="animate-spin" /> Uploading...</>
           ) : (
-            <><UploadCloud size={16} /> Click to Upload File (PDF/Image)</>
+            <><UploadCloud size={16} /> Upload</>
+          )}
+        </button>
+        <button
+          type="button"
+          disabled={isUploading}
+          onClick={() => cameraInputRef.current?.click()}
+          className={`flex-1 sm:hidden flex items-center justify-center gap-2 px-3 py-2 border-2 border-dashed rounded-2xl font-bold text-xs sm:text-sm transition-all ${
+            isUploading 
+              ? 'border-emerald-300 bg-emerald-50 text-emerald-500 cursor-wait' 
+              : 'border-slate-300 hover:border-emerald-400 hover:bg-emerald-50 text-slate-600 hover:text-emerald-600 bg-[#F4F7FB]/50'
+          }`}
+        >
+          {isUploading ? (
+            <><Loader2 size={16} className="animate-spin" /> Scanning...</>
+          ) : (
+            <><Camera size={16} /> Scan Doc</>
           )}
         </button>
         <button

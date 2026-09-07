@@ -54,8 +54,8 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
     try {
       await setPersistence(auth, keepSignedIn ? browserLocalPersistence : browserSessionPersistence);
       
-      const emailMliju = customEmail || selectedUser.email || `${selectedUser.id.toLowerCase().replace(/[^a-z0-9]/g, '')}@mliju.local`;
-      const emailMarazak = customEmail || selectedUser.email || `${selectedUser.id.toLowerCase().replace(/[^a-z0-9]/g, '')}@marazak.local`;
+      const emailMliju = (customEmail || selectedUser.email || `${selectedUser.id.toLowerCase().replace(/[^a-z0-9]/g, '')}@mliju.local`).trim();
+      const emailMarazak = (customEmail || selectedUser.email || `${selectedUser.id.toLowerCase().replace(/[^a-z0-9]/g, '')}@marazak.local`).trim();
 
       try {
         await signInWithEmailAndPassword(auth, emailMliju, password);
@@ -67,7 +67,7 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
              await signInWithEmailAndPassword(auth, emailMarazak, password);
              onLogin(selectedUser);
           } catch (err2: any) {
-             setError('Incorrect Password. Please try again.');
+             setError(`Incorrect Password or Email. (System tried logging in with: ${emailMliju})`);
           }
         } else {
           setError('Login Failed: ' + err1.message);

@@ -164,7 +164,7 @@ export function AdminDatabase({
             const adminUser = users.find(u => u.role === 'admin' || u.id === 'admin');
             if (adminUser) {
               await setDoc(getDocRef('meta', 'login_roster'), {
-                [adminUser.id]: { id: adminUser.id, name: adminUser.name, enabled: adminUser.enabled }
+                [adminUser.id]: { id: adminUser.id, name: adminUser.name, enabled: adminUser.enabled, email: adminUser.email }
               });
             }
             

@@ -3,13 +3,12 @@ import { Task } from '../types';
 export const generateId = (tasksList: Task[] = []): string => {
   const tanIds = tasksList
     .map(t => t.id)
-    .filter(id => /^KGM30\d+$/.test(id))
-    .map(id => parseInt(id.replace('KGM30', ''), 10));
-  if (tanIds.length === 0) return 'KGM30001';
+    .filter(id => /^KAY\d+$/.test(id))
+    .map(id => parseInt(id.replace('KAY', ''), 10));
+  if (tanIds.length === 0) return 'KAY1080000';
   const maxId = Math.max(...tanIds);
-  const nextId = maxId + 1;
-  const paddedNum = String(nextId).padStart(3, '0');
-  return `KGM30${paddedNum}`;
+  const nextId = Math.max(maxId + 1, 1080000);
+  return `KAY${nextId}`;
 };
 
 export const generateUid = (): string => Math.random().toString(36).substring(2, 9);
