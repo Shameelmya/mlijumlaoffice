@@ -204,9 +204,16 @@ export default function App() {
         if (rosterDoc && rosterDoc.exists()) {
           const rosterData = rosterDoc.data();
           const rosterUsers = Object.values(rosterData).filter((u: any) => u.id && u.name) as UserType[];
-          setUsers(rosterUsers);
+          
+          const mergedUsers = [...DEFAULT_USERS];
+          rosterUsers.forEach(ru => {
+            if (ru.id !== 'admin') mergedUsers.push(ru);
+          });
+          setUsers(mergedUsers);
+        } else {
+          setUsers(DEFAULT_USERS);
         }
-      }, (err) => console.error("Roster fetch error:", err)); 
+      }, (err) => console.error("Roster fetch error:", err));
       return unsub;
     }
   }, [currentUser]);
