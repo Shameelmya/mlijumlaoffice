@@ -227,8 +227,6 @@ export default function App() {
           
           setUsers(mergedUsers);
           localStorage.setItem('mla_users_roster', JSON.stringify(mergedUsers));
-        } else {
-          setUsers(DEFAULT_USERS);
         }
       }, (err) => console.error("Roster fetch error:", err));
       return unsub;
