@@ -73,15 +73,9 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
         {/* Main Login Card Wrapper */}
         <div className="bg-white/90 backdrop-blur-2xl rounded-[32px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] border border-white max-w-5xl w-full overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[450px] transition-all">
           
-          {/* Left Column: Premium Corporate Blue Gradient */}
-          <div className="md:col-span-5 col-span-1 bg-gradient-to-b from-[#0F172A] to-[#1E3A8A] text-white flex flex-col justify-end items-center relative overflow-hidden">
-            
-            <div className="absolute inset-0 z-10 w-full h-full opacity-90 mix-blend-overlay">
-              <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
-            </div>
-            <div className="relative z-20 pb-12 px-8 text-center text-white/90 font-light tracking-wide text-sm">
-              <p>MLA Office Management System</p>
-            </div>
+          {/* Left Column: Logo Display */}
+          <div className="md:col-span-5 col-span-1 bg-[#1a365d] relative overflow-hidden min-h-[300px]">
+            <img src="/logo.png" alt="Logo" className="absolute inset-0 w-full h-full object-cover object-center" />
           </div>
 
           {/* Right Column */}
