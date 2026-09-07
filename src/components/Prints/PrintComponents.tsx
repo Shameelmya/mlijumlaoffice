@@ -12,7 +12,7 @@ export function PrintAcknowledgeSlip({ task }: PrintAcknowledgeSlipProps) {
       className="w-full bg-white text-black font-serif relative" 
       style={{ 
         fontFamily: "'Noto Serif Malayalam', serif",
-        backgroundImage: "url('/letterpad.jpg')", 
+        backgroundImage: "url('/letterpad.png')", 
         backgroundSize: '100% 100%', 
         backgroundRepeat: 'no-repeat', 
         minHeight: '1123px', 
@@ -45,12 +45,12 @@ export function PrintAcknowledgeSlip({ task }: PrintAcknowledgeSlipProps) {
         <div className="mb-12 text-[15px] leading-loose text-black font-medium text-justify" style={{ fontFamily: "'Noto Serif Malayalam', serif" }}>
            ബഹു. {task.personalDetails.name.toUpperCase()}, <br/><br/>
            {formatMalayalamDate(task.createdAt)} റഫറൻസ് നമ്പർ {task.id} ആയി മേൽപ്പറഞ്ഞ വിഷയത്തിൽ താങ്കൾ നൽകിയ അപേക്ഷ / പരാതി സ്വീകരിച്ച് ഔദ്യോഗികമായി രേഖപ്പെടുത്തിയിട്ടുണ്ട്. <br/><br/>
-           എം.എ റസാഖ് മാസ്റ്റർ എം എൽ എയുടെ ഓഫീസുമായി ബന്ധപ്പെട്ടതിന് നന്ദി.
+           എം. ലിജു എം എൽ എയുടെ ഓഫീസുമായി ബന്ധപ്പെട്ടതിന് നന്ദി.
         </div>
         <div className="mt-12 text-right">
           <p className="font-medium text-black mb-2" style={{ fontFamily: "'Noto Serif Malayalam', serif" }}>സ്നേഹത്തോടെ,</p>
           <div className="mt-8 text-right">
-            <p className="font-bold text-black uppercase text-sm" style={{ fontFamily: "'Noto Serif Malayalam', serif" }}>എം.എൽ.എ ഓഫീസ്, കുന്നമംഗലം</p>
+            <p className="font-bold text-black uppercase text-sm" style={{ fontFamily: "'Noto Serif Malayalam', serif" }}>എം.എൽ.എ ഓഫീസ്, കായംകുളം</p>
             <p className="text-sm font-normal text-black">Phone: 9037032002</p>
           </div>
         </div>
@@ -72,7 +72,7 @@ export function PrintCompletionLetter({ task }: PrintCompletionLetterProps) {
       className="w-full bg-white text-black font-serif relative flex flex-col overflow-hidden z-0" 
       style={{ 
         fontFamily: "'Noto Serif Malayalam', serif",
-        backgroundImage: "url('/letterpad.jpg')", 
+        backgroundImage: "url('/letterpad.png')", 
         backgroundSize: '100% 100%', 
         backgroundRepeat: 'no-repeat', 
         minHeight: '1123px', 
@@ -143,7 +143,7 @@ export function PrintCompletionLetter({ task }: PrintCompletionLetterProps) {
             </div>
           )}
           <div className="mt-0 border-t border-slate-100 pt-1 inline-block text-right">
-            <p className="font-bold text-black text-sm" style={{ fontFamily: "'Noto Serif Malayalam', serif" }}>എം.എ റസാഖ് മാസ്റ്റർ</p>
+            <p className="font-bold text-black text-sm" style={{ fontFamily: "'Noto Serif Malayalam', serif" }}>എം. ലിജു</p>
             <p className="text-sm font-normal text-black mb-1">Member of Legislative Assembly (MLA)</p>
             <p className="text-sm font-normal text-black">Phone: 9037032002</p>
           </div>
