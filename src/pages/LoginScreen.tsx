@@ -35,8 +35,7 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
     setIsLoggingIn(true);
     try {
       await setPersistence(auth, keepSignedIn ? browserLocalPersistence : browserSessionPersistence);
-      
-      let emailToTry = customEmail || `${selectedUser.id.toLowerCase().replace(/[^a-z0-9]/g, '')}@mliju.local`;
+      let emailToTry = customEmail || selectedUser.email || `${selectedUser.id.toLowerCase().replace(/[^a-z0-9]/g, '')}@mliju.local`;
 
       await signInWithEmailAndPassword(auth, emailToTry, password);
       onLogin(selectedUser);
