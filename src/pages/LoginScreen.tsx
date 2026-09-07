@@ -105,11 +105,11 @@ export function LoginScreen({ onLogin, users }: LoginScreenProps) {
         <div className="bg-white/90 backdrop-blur-2xl rounded-[32px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] border border-white max-w-5xl w-full overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[450px] transition-all">
           
           {/* Left Column: Logo Display */}
-          <div className="md:col-span-5 col-span-1 bg-white relative overflow-hidden min-h-[200px] md:min-h-[300px] flex items-center justify-center">
+          <div className="md:col-span-5 col-span-1 bg-white relative overflow-hidden min-h-[280px] md:min-h-[300px] flex items-center justify-center">
             <img 
               src="/logo.png" 
               alt="Logo" 
-              className="absolute inset-0 w-full h-full object-cover object-bottom md:object-contain md:object-center px-4 pt-4 pb-0 md:p-6"
+              className="absolute inset-0 w-full h-full object-contain object-center p-4 md:p-6"
               style={{ mixBlendMode: 'multiply' }}
             />
           </div>
